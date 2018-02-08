@@ -22,7 +22,7 @@
               {{ props.row.workLocation.name}}
           </b-table-column>
           <b-table-column field="startWorkDate" label="Başlangıç Tarihi" sortable>
-              {{ new Date(props.row.startWorkDate).toLocaleDateString('tr-TR')}}
+              {{ props.row.startWorkDate !== null ? new Date(props.row.startWorkDate).toLocaleDateString('tr-TR') : '-'}}
           </b-table-column>
           <b-table-column label="Aksiyon" sortable>
 

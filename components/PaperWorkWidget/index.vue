@@ -1,8 +1,14 @@
 <template>
   <section>
+    {{disableDocumentList}}
       <b-tabs v-model="activeTab" @change="tabChanged">
         <b-tab-item label="Personel Bilgileri" icon="account-box">
-          <employee-information :item="item" :edit="edit" :search="search" :identity-number="true" :position="false" />
+          <employee-information
+            :item="item"
+            :edit="edit"
+            :search="search"
+            :identity-number="true"
+            :position="position" />
         </b-tab-item>
         <b-tab-item label="Personel Detay Bilgileri" icon="account-card-details">
           <employee-information-detail :item="item" :edit="edit" :search="search" />
@@ -10,60 +16,126 @@
         <b-tab-item label="Organizasyon Bilgileri" icon="lan">
           <organization-detail :item="item" :edit="edit" :search="search" />
         </b-tab-item>
-        <b-tab-item label="Evrak Listesi" icon="file-document" :disabled="!widgetForm.isCompanyChanged">
+
+        <b-tab-item label="Evrak Listesi" icon="file-document" :disabled="!disableDocumentList">
           <document-detail :item="item" :edit="edit" :search="search" />
         </b-tab-item>
       </b-tabs>
       <div class="field is-grouped">
         <p class="control">
-          <button class="button is-primary" value="isEmployee" name="isEmployee" type="submit">Personel Girişini Başlat</button>
+          <button class="button is-primary" @click="startEmployment" type="submit">Personel Girişini Başlat</button>
         </p>
         <p class="control">
-          <button class="button is-warning" v-if="edit" value="isBP"  name="isBP" type="submit">BP Onayına Gönder</button>
+          <button class="button is-primary" :disabled="$store.state.widgetForm.canStartEmploymentIsInvalid" type="submit">Personel Girişini Başlat</button>
         </p>
         <p class="control">
-          <button class="button is-success" v-if="edit" name="isPaperwork" type="submit">Evrak Takibini Başlat</button>
+          <button class="button is-warning" v-if="edit && widgetForm.editItem.flowId > 0 && !documentDetail.mandatoryDocuments" value="isBP"  name="isBP">BP Onayına Gönder</button>
         </p>
         <p class="control">
-          <button class="button is-info" :disabled="!isDraft" name="isDraft">Taslak Olarak Kaydet</button>
+          <button class="button is-success"
+                  v-if="edit && documentDetail.mandatoryDocuments"
+                  >Evrak Takibini Başlat</button>
         </p>
         <p class="control">
-          <button class="button" v-if="edit" name="isCancel" type="submit">Süreci İptal Et</button>
+          <button class="button is-info"
+                  @click="saveAsDraft"
+                  :disabled="!isDraft">Taslak Olarak Kaydet</button>
+        </p>
+
+        <p class="control" v-if="edit && canCancel">
+          <button class="button" name="isCancel" type="submit">Süreci İptal Et</button>
         </p>
         <p class="control">
-          <button class="button is-danger" v-if="edit" type="submit">Sil</button>
+          <button class="button is-danger" @click="deleteDocument"  v-if="edit && canDelete" type="submit">Sil</button>
         </p>
       </div>
     </section>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import { required, minLength, maxLength } from 'vuelidate/lib/validators'
 import EmployeeInformation from './EmployeeInformation'
 import EmployeeInformationDetail from './EmployeeInformationDetail'
 import OrganizationDetail from './OrganizationDetail'
 import DocumentDetail from './DocumentDetail'
+
 export default {
-  props: ['edit', 'search', 'item'],
+  props: ['edit', 'search', 'item', 'position'],
   data() {
     return {
-        activeTab: 0
+      activeTab: 0
     }
   },
-  computed: {
-    isDraft () {
-      if (this.edit) {
-        return !!this.widgetForm.item.enrollment.firstname && !!this.widgetForm.item.enrollment.lastname && !!this.widgetForm.item.enrollment.identityNumber
 
+  computed: {
+    ...mapState(['widgetForm', 'documentDetail']),
+
+    disableDocumentList () {
+      if (this.edit) {
+        return true
+      } else {
+        return !!this.widgetForm.item.enrollment.organization
       }
     },
-    ...mapState(['widgetForm', 'documentDetail'])
+
+    canCancel () {
+      return this.widgetForm.editItem.flowId > 0
+    },
+
+    canDelete () {
+      return this.widgetForm.editItem.flowId === 0
+    },
+
+
+    isDraft () {
+      if (this.edit) {
+        const isDraftEdit = !!this.widgetForm.editItem.enrollment.firstname && !!this.widgetForm.editItem.enrollment.lastname && !!this.widgetForm.editItem.enrollment.identityNumber
+
+        return isDraftEdit
+      }
+      const isDraftNew = !!this.widgetForm.item.enrollment.firstname && !!this.widgetForm.item.enrollment.lastname && !!this.widgetForm.item.enrollment.identityNumber
+
+      return isDraftNew
+    }
   },
 
   methods: {
+    ...mapActions({
+      startEmployment: 'widgetForm/startEmployment'
+    }),
+
+    deleteDocument () {
+      this.$store.dispatch('widgetForm/deleteDocument')
+    },
+
+    saveAsDraft () {
+      return this.edit
+        ? this.$store.dispatch('widgetForm/updateAsDraft')
+          : this.$store.dispatch('widgetForm/saveAsDraft')
+    },
+
     tabChanged () {
-      return this.activeTab === 3 ? this.$store.dispatch('documentDetail/getDocumentDetails') : null
+      const {
+        organization,
+        category,
+        isExistsPersonalPrivateHealthInsurance,
+        isHealthInsuranceIncludeFamily,
+        isDisabled,
+        isRetired,
+        isFormerWorker,
+        isOutsourceTransfer
+      } = this.edit ? this.widgetForm.editItem.enrollment : this.widgetForm.item.enrollment
+      return this.activeTab === 3
+              ? this.$store.dispatch('widgetForm/getDocumentDetails', {
+                organization,
+                category,
+                isExistsPersonalPrivateHealthInsurance,
+                isHealthInsuranceIncludeFamily,
+                isDisabled,
+                isRetired,
+                isFormerWorker,
+                isOutsourceTransfer}) : null
     }
   },
   components: {

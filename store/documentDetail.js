@@ -1,24 +1,36 @@
 const documentDetail = {
   namespaced: true,
   state: {
-    data: []
+    documentsList: [],
+    mandatoryDocuments: true
   },
   mutations: {
-    setDocumentDetails (state, payload) {
-      state.data = payload
+    setMandatoryDocuments (state, payload) {
+      state.mandatoryDocuments = payload
+    },
+    setDocumentsList (state, payload) {
+      state.documentsList = payload
     }
+
   },
   getters: {
 
   },
   actions: {
-    async getDocumentDetails ({ commit, rootState }, payload) {
-      const organization = rootState.widgetForm.item.organization
-      const category = rootState.widgetForm.item.category
-      const { data } = await this.$axios.post(`organization/documents/all`, {organization, category})
-
-      return data ? commit('setDocumentDetails', data) : null
+    async changeDocumentStatus ({ commit }, payload) {
+      await this.$axios.put(`document/employee/detail/${payload.id}`, { documentStatus: payload.documentStatus })
     },
+
+    getMandatoryDocuments ({ commit }, id) {
+      const { data } = this.$axios.get(`document/employee/detail/${id}/mandatoryDocumentsReceived`)
+      return data ? commit('setMandatoryDocuments', data) : null
+    },
+
+    async getDocumentsList ({ commit }, payload) {
+      const { data } = await this.$axios.post(`document/employee/detail/search`, payload)
+      return data ? commit('setDocumentsList', data) : null
+    }
+
   }
 }
 

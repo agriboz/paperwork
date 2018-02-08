@@ -81,42 +81,34 @@ const shared = {
       return data ? commit('setOrganizations', data) : null
     },
 
-    async getCompanies ({ commit, rootState }) {
-      const organizationId = rootState.widgetForm.item.enrollment.organization.id
-
-      const { data } = await this.$axios.get(`company/${organizationId}`)
+    async getCompanies ({ commit }, payload) {
+      const { data } = await this.$axios.get(`company/${payload}`)
 
       return data ? commit('setCompanies', data) : null
     },
 
-    async getWorkLocations ({ commit, rootState }) {
-      const companyId = rootState.widgetForm.item.enrollment.company.id
-
-      const { data } = await this.$axios.get(`company/${companyId}/locations`)
+    async getWorkLocations ({ commit }, payload) {
+      const { data } = await this.$axios.get(`company/${payload}/locations`)
 
       return data ? (commit('setWorkLocations', data), commit('setSGKLocations', data)) : null
 
     },
 
-    async getHrBusinessPartnerEmployees ({ commit, rootState }) {
-      const organizationId = rootState.widgetForm.item.enrollment.organization.id
-
-      const { data } = await this.$axios.get(`organization/${organizationId}/businesspartners`)
+    async getHrBusinessPartnerEmployees ({ commit }, payload) {
+      const { data } = await this.$axios.get(`organization/${payload}/businesspartners`)
 
       return data ? commit('setHrBusinessPartnerEmployees', data) : null
     },
 
-    async getManagers ({ commit, rootState }, payload) {
+    async getManagers ({ commit }, payload) {
       if (payload.name.length >= 3) {
         const { data } = await this.$axios.post(`organization/managers`, payload)
         return data ? commit('setManagers', data) : null
       }
     },
 
-    async getCategories ({ commit, rootState }, payload) {
-      const organizationId = rootState.widgetForm.item.enrollment.organization.id
-
-      const { data } = await this.$axios.get(`organization/${organizationId}/document/categories`)
+    async getCategories ({ commit }, payload) {
+      const { data } = await this.$axios.get(`organization/${payload}/document/categories`)
 
       return data ? commit('setCategories', data) : null
     },
@@ -161,10 +153,8 @@ const shared = {
       return data ? commit('setBuddyTypes', data) : null
     },
 
-    async getBuddyEmployees ({ commit, rootState }) {
-      const companyId = rootState.widgetForm.item.enrollment.company.id
-
-      const { data } = await this.$axios.get(`company/${companyId}/employees`)
+    async getBuddyEmployees ({ commit }, payload) {
+      const { data } = await this.$axios.get(`company/${payload}/employees`)
 
       return data ? commit('setBuddyEmployees', data) : null
     }
