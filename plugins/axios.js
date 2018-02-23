@@ -69,17 +69,18 @@ export default function ({
       return response
     },
     error => {
-      if (error.statusCode === 401) {
+
+      if (error.response.status === 401) {
         $toast.open({
           type: 'is-danger',
           message: error.response.data.message
         })
-      } else if (error.statusCode === 404) {
+      } else if (error.response.status === 404) {
         $toast.open({
           type: 'is-info',
           message: 'Sonuç Bulunamadı'
         })
-      } else if (error.statusCode === 500) {
+      } else if (error.response.status === 500) {
         $toast.open({
           type: 'is-danger',
           message: error.response.data.error

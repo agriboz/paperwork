@@ -21,9 +21,13 @@ const documentDetail = {
       await this.$axios.put(`document/employee/detail/${payload.id}`, { documentStatus: payload.documentStatus })
     },
 
-    getMandatoryDocuments ({ commit }, id) {
-      const { data } = this.$axios.get(`document/employee/detail/${id}/mandatoryDocumentsReceived`)
-      return data ? commit('setMandatoryDocuments', data) : null
+    async getMandatoryDocuments ({ commit }, id) {
+
+      const response = await this.$axios.get(`document/employee/detail/${id}/mandatoryDocumentsReceived`)
+      console.log(response.data)
+      return response.status === 200 ? commit('setMandatoryDocuments', response.data) : null
+
+
     },
 
     async getDocumentsList ({ commit }, payload) {

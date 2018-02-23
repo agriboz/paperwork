@@ -13,50 +13,42 @@ const widgetForm = {
         isDisabled: false,
         isRetired: false,
         isFormerWorker: false,
-        isOutsourceTransfer: false
+        isOutsourceTransfer: false,
+        isDoctorAppointmentSet: false,
+        manager: {
+          name: null
+        }
       }
     },
     editItem: {
       documentDetails: []
     },
-    isCompanyChanged: false,
-    isFormDraft: true,
-    canStartEmploymentIsInvalid: true
+    isFirstTabInValid: true,
+    isSecondTabInValid: true,
+    isThirdTabInValid: true
   },
   mutations: {
     item (state, payload) {
       Object.assign(state.item, payload)
-
-      if (state.item.enrollment.isBuddyAssigned) {
-        delete state.item.enrollment.buddyType
-      }
-
-      if (!state.item.enrollment.isBuddyAssigned) {
-        delete state.item.enrollment.buddyEmployee
-      }
-
-      if (!state.item.enrollment.isOutsourceTransfer) {
-        delete state.item.enrollment.seniorityStartDate
-        delete state.item.enrollment.leaveDate
-        delete state.item.enrollment.transferDate
-        delete state.item.enrollment.leaveDayCost
-      }
-
-      if (!state.item.enrollment.isSendWelcomeKit) {
-        delete state.item.enrollment.welcomeKitType
-      }
-
-
     },
+
+    isFirstTabInValid (state, payload) {
+      state.isFirstTabInValid = payload
+    },
+
+    isSecondTabInValid (state, payload) {
+      state.isSecondTabInValid = payload
+    },
+
+    isThirdTabInValid (state, payload) {
+      state.isThirdTabInValid = payload
+    },
+
     isCompanyChanged (state, payload) {
       state.isCompanyChanged = payload
     },
     isFormDraft (state, payload) {
       state.isFormDraft = payload
-    },
-
-    canStartEmployment (state, payload) {
-      state.canStartEmploymentIsInvalid = payload
     },
 
     editItem (state, payload) {
@@ -78,7 +70,6 @@ const widgetForm = {
     addNewDocumentList (state, payload) {
       state.item.documentDetails = [...state.item.documentDetails, payload]
     }
-
 
   },
 
@@ -129,23 +120,23 @@ const widgetForm = {
         }
       )
 
-      const { data} = await this.$axios.post(`document/employee/`, sendDraftData)
+      const { data } = await this.$axios.post(`document/employee/`, sendDraftData)
 
     },
 
     async updateAsDraft ({ commit, state, rootState }, payload) {
-      const { data} = await this.$axios.put(`document/employee/${state.editItem.id}`, state.editItem)
+      const { data } = await this.$axios.put(`document/employee/${state.editItem.id}`, state.editItem)
     },
 
     async deleteDocument ({ commit, state }) {
-      const { data} = await this.$axios.delete(`document/employee/${state.editItem.id}`)
+      const { data } = await this.$axios.delete(`document/employee/${state.editItem.id}`)
     },
 
-    async startEmployment ({ commit, state, rootState }) {
+    async startEmployment ({ commit, state, rootState }, payload) {
       const getState = {
-        ...state.item,
+        ...payload,
         enrollment: {
-          ...state.item.enrollment,
+          ...payload.enrollment,
           employeeType: {
             id: 1
           },
@@ -157,6 +148,9 @@ const widgetForm = {
 
       const sendDraftData = Object.assign({},
         getState, {
+          organization: {
+            id: payload.enrollment.organization.id
+          },
           entryUser: {
             id: rootState.shared.employee.id
           },
@@ -166,9 +160,19 @@ const widgetForm = {
         }
       )
 
-      const { data} = await this.$axios.post(`document/employee/startEmployment`, sendDraftData)
+      const { data } = await this.$axios.post(`document/employee/startEmployment`, sendDraftData)
     },
 
+    async startBPProcess ({ rootState }) {
+      const id = rootState.widgetForm.editItem.id
+
+      await this.$axios.post(`document/employee/sendmanagerapprove`, { id })
+    },
+
+    async sendToDocumentationTeam ({ rootState }, payload) {
+      console.log(payload)
+      await this.$axios.post(`document/employee/startdocumentation`, payload)
+    },
   }
 }
 

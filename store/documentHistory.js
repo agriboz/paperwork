@@ -1,20 +1,20 @@
-const search = {
+const documentHistory = {
   namespaced: true,
   state: {
     data: []
   },
   mutations: {
-    setSearchResult (state, payload) {
+    setDocumentHistory (state, payload) {
       state.data = payload
     }
   },
   actions: {
-    async makeSearch ({ commit, rootState }) {
-      const searchData = rootState.widgetForm.item
-      const { data } = await this.$axios.post(`document/employee/search`, searchData)
-      return data ? commit('setSearchResult', data) : null
+    async getDocumentHistory ({ commit, rootState }) {
+      const flowId = rootState.widgetForm.editItem.flowId
+      const { data } = await this.$axios.get(`document/employee/flow/${flowId}/history`)
+      return data ? commit('setDocumentHistory', data) : null
     },
   }
 }
 
-export default search
+export default documentHistory

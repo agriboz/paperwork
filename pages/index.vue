@@ -1,11 +1,27 @@
 <template>
-  <section class="section">
-    <h1 class="title is-size-4">Arama Kriterleri</h1>
+  <section>
+    <h1 class="title is-size-5">Arama Kriterleri</h1>
     <hr>
+    <div class="field is-grouped is-pulled-right is-clearfix">
+      <div class="control">
+        <download-excel
+          v-if="$store.state.search.data.length"
+          class   = "button is-success"
+          :data   = "$store.state.search.data"
+          :fields = "this.fields"
+          name    = "evraktakip.xls">
+          Excel'e Aktar
+        </download-excel>
+      </div>
+      <div class="control">
+        <a @click.prevent="makeSearch" class="button is-info">Arama Yap</a>
+      </div>
+    </div>
+    <div class="is-clearfix"></div>
     <div class="columns">
       <div class="column">
         <div class="form-wrapper" title="Personel Bilgileri">
-          <employee-information :item="widgetForm.item" :search="true" :position="true" />
+          <employee-information :item="widgetForm.item" :search="true"/>
         </div>
       </div>
       <div class="column">
@@ -25,14 +41,26 @@
     <div class="columns">
       <div class="column">
         <div class="form-wrapper" title="Personel Detay Bilgileri">
-          <incident-information />
+          <incident-information :item="widgetForm.item" />
         </div>
       </div>
     </div>
-    <div class="buttons has-addons is-right">
-      <a @click.prevent="makeSearch" class="button is-info">Arama Yap</a>
+    <div class="field is-grouped is-pulled-right is-clearfix">
+      <div class="control">
+        <download-excel
+          v-if="$store.state.search.data.length"
+          class   = "button is-success"
+          :data   = "$store.state.search.data"
+          :fields = "this.fields"
+          name    = "evraktakip.xls">
+          Excel'e Aktar
+        </download-excel>
+      </div>
+      <div class="control">
+        <a @click.prevent="makeSearch" class="button is-info">Arama Yap</a>
+      </div>
     </div>
-
+    <div class="is-clearfix"></div>
      <document-search-result v-if="$store.state.search.data.length" />
   </section>
 
@@ -48,6 +76,17 @@ import DocumentSearchResult from '@/components/DocumentSearchResult'
 
 
 export default {
+  data: function () {
+    return {
+      fields: {
+        'ID': 'id',
+        'Adı Soyadı': 'name',
+        'Organizasyon': 'organization.name',
+        'Lokasyon': 'workLocation.name',
+        'Başlangıç Tarihi': 'startWorkDate'
+      }
+    }
+  },
 
   computed: {
     ...mapState(['widgetForm'])
@@ -59,6 +98,15 @@ export default {
   beforeMount () {
     const state = JSON.parse(localStorage.getItem('state'))
     this.resetState(state.widgetForm.item)
+  },
+  mounted () {
+    this.makeSearch().then(() => {
+      const searchWrapper = document.getElementById('document-search-result')
+      searchWrapper.scrollIntoView({
+        behavior: 'smooth'
+      })
+
+    })
   },
   components: {
     EmployeeInformation,

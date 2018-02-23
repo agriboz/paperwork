@@ -1,5 +1,20 @@
 <template>
   <div class="sidebar">
+    <div class="loginUserInfo">
+      <div class="userPhoto">
+        <img v-if="employee.image" class="employee-image" :src="`data:image/png;base64, ${employee.image}`">
+        <b-icon v-else icon="account-circle" size="is-large"></b-icon>
+      </div>
+      <div class="userName">
+        {{employee.name}} {{employee.surname}}
+      </div>
+      <div class="userTitle">
+        {{employee.title}}
+      </div>
+      <div class="userId">
+        {{employee.registry}}
+      </div>
+    </div>
     <aside class="menu">
       <ul class="menu-list">
         <li :key="m.id" v-if="m.visible"  v-for="m of menu">
@@ -26,41 +41,30 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters({
-      menu: 'ui/menu'
+      menu: 'ui/menu',
+      employee: 'shared/isEmployee'
     })
+  },
+  beforeMount () {
+    this.$store.dispatch('shared/getEmployee')
   }
 }
 </script>
 <style scoped>
   .sidebar {
-    width: 60px;
-    position: sticky;
-    top: 10px;
+    width: 210px;
     margin-left: -20px;
     z-index:1;
-    overflow: hidden;
-    height: calc(100vh - 82px);
     transition: width .15s ease-in-out,box-shadow .15s ease-in-out;
   }
   .sidebar:hover {
-    width: 300px;
     box-shadow: 4px 4px 20px hsla(0,0%,7%,.1), 0 0 0 1px hsla(0,0%,7%,.1)
   }
-  .sidebar:hover .menu-item {
-    opacity: 1;
-    transform: translate(10px);
-  }
 
-  .menu-item {
-    opacity: 0;
-    transform: translate(-10px);
-    transition: color .15s ease-in-out,opacity .15s ease-in-out,transform .15s ease-in-out;
-  }
   .menu-link {
     display: flex;
     align-items: center;
     height: 44px;
-    width: 300px;
     padding: 0 18px;
     transition: all .15s ease-in-out;
   }
@@ -76,4 +80,15 @@ export default {
     justify-content: center;
     display: inline-flex;
   }
+
+  .menu-list a {
+    font-size: 13px;
+  }
+
+  .menu-list a.is-active {
+    background-color: #e0e3f2;
+    color: #34495e;
+    border-left: 3px solid #34495e;
+  }
+
 </style>

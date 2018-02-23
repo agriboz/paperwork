@@ -1,5 +1,5 @@
 <template>
-  <div class="form-wrapper" title="Arama Sonuç">
+  <div class="form-wrapper" title="Arama Sonuç" id="document-search-result">
     <b-table
       :data="search.data"
       :paginated="ui.tableOpts.isPaginated"
@@ -24,28 +24,38 @@
           <b-table-column field="startWorkDate" label="Başlangıç Tarihi" sortable>
               {{ props.row.startWorkDate !== null ? new Date(props.row.startWorkDate).toLocaleDateString('tr-TR') : '-'}}
           </b-table-column>
+          <b-table-column field="entryUser.name" label="İşlemi Yapan Personel" sortable>
+              {{ props.row.entryUser.name}}
+          </b-table-column>
           <b-table-column label="Aksiyon" sortable>
-
-
-                <nuxt-link class="button is-primary" :to="'white-collar/edit/' + props.row.id"> Detay</nuxt-link>
-
+              <nuxt-link class="button is-primary" :to="'white-collar/edit/' + props.row.id"> Detay</nuxt-link>
           </b-table-column>
       </template>
+      <template slot="empty">
+        <section class="section">
+          <div class="content has-text-grey has-text-centered">
+            <p>
+              <b-icon
+                icon="information-outline"
+                size="is-large">
+              </b-icon>
+            </p>
+            <p>Herhangi bir sonuç bulunamadı.</p>
+          </div>
+        </section>
+      </template>
     </b-table>
+
   </div>
 </template>
 
 <script>
+
 import { mapState } from 'vuex'
   export default {
     computed: {
       ...mapState(['ui', 'search'])
-    },
-    mounted () {
     }
   }
 </script>
 
-<style scoped>
-
-</style>

@@ -20,27 +20,27 @@ const ui = {
         name: 'MY İşe Giriş',
         link: '/advance-list',
         icon: 'worker',
-        visible: true
+        visible: false
       },
       {
         id: 4,
         name: 'Stajyer İşe Giriş',
         link: '/intern',
         icon: 'school',
-        visible: true
+        visible: false
       },
       {
         id: 5,
         name: 'Evraklarım',
         link: '/settings',
         icon: 'file-document',
-        visible: true
+        visible: false
       },
       {
         id: 6,
         name: 'Görevlerim',
         link: '/tasks',
-        icon: 'file-check',
+          icon: 'file-check',
         visible: true
       }
 

@@ -1,20 +1,47 @@
-const documentHistory = {
+const tasks = {
   namespaced: true,
   state: {
-    data: []
+    data: [],
+    buddyInformation: null
   },
+
   mutations: {
-    setDocumentHistory (state, payload) {
+    setTasks (state, payload) {
       state.data = payload
+    },
+    editItem (state, payload) {
+      state.item = payload
+    },
+    setBuddyInformation (state, payload) {
+      state.buddyInformation = payload
+
     }
   },
   actions: {
-    async getDocumentHistory ({ commit, rootState }) {
-      const flowId = rootState.widgetForm.editItem.flowId
-      const { data } = await this.$axios.get(`document/employee/flow/${flowId}/history`)
-      return data ? commit('setDocumentHistory', data) : null
+    async getTasks ({commit}) {
+      const { status, data } = await this.$axios.get(`employee/task/waiting`)
+
+      return status === 200 ? commit('setTasks', data) : []
     },
+    async getTaskById ({ commit }, payload) {
+      const { data } = await this.$axios.get(`document/eba/${payload}`)
+      commit('editItem', data)
+    },
+
+    async isTaskApproved ({ commit, state }, payload) {
+      const { data } = await this.$axios.post(`document/employee/${payload}`, state.item)
+    },
+
+    async getBuddy ({ commit }, employeeId) {
+      const { data } = await this.$axios.get(`employee/${employeeId}`)
+      commit('setBuddyInformation', data)
+    },
+    async setBuddy ({ commit, state }) {
+      const { status, data } = await this.$axios.post(`document/employee/assignBuddy`, state.item)
+      console.log(status, data)
+      return status === 200 && data ? this.$router.push('/tasks') : false
+    }
   }
 }
 
-export default documentHistory
+export default tasks

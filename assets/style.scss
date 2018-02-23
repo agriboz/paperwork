@@ -1,0 +1,181 @@
+@import "~bulma/sass/utilities/_all";
+// Set your colors
+$primary: #34495e;
+$primary-invert: findColorInvert($primary);
+// Setup $colors to use as bulma classes (e.g. 'is-twitter')
+$colors: ( "white": ($white, $black), "black": ($black, $white), "light": ($light, $light-invert), "dark": ($dark, $dark-invert), "primary": ($primary, $primary-invert), "info": ($info, $info-invert), "success": ($success, $success-invert), "warning": ($warning, $warning-invert), "danger": ($danger, $danger-invert));
+// Links
+$link: $primary;
+$link-invert: $primary-invert;
+$link-focus-border: $primary;
+// Import Bulma and Buefy styles
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
+
+body {
+  font-family: 'Open Sans';
+  font-size: 14px;
+}
+
+html {
+  background: #f5f5f5;
+  height: 100vh;
+}
+
+.navbar {
+  background-color: #2b3643;
+  min-height: 38px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  left: 0;
+  z-index: 3;
+  padding-left: 20px;
+}
+
+
+.sidebar,
+.main {
+  background-color: #fff;
+  margin-top: 1rem;
+  box-shadow: 0 2px 3px hsla(0, 0%, 7%, .1), 0 0 0 1px hsla(0, 0%, 7%, .1);
+}
+
+.is-fluid {
+  margin-top: 2.25rem !important;
+  margin-left: 20px !important;
+  margin-right: 10px !important;
+}
+
+.main {
+  max-width: 100%;
+  margin: 15px -15px 0 15px;
+}
+
+.columns {
+  margin-top: 0;
+}
+
+.container {
+  min-height: 90vh;
+}
+
+
+.form-wrapper {
+  border: 1px solid #425970;
+  position: relative;
+  padding: 1.5rem;
+  margin-top: 20px;
+}
+
+.form-wrapper:before {
+  background: #425970;
+  border-radius: 3px 3px 0 0;
+  bottom: 100%;
+  color: #fff;
+  content: attr(title);
+  display: inline-block;
+  font-size: .75rem;
+  font-weight: bold;
+  left: -1px;
+  letter-spacing: 1px;
+  padding: 3px 5px;
+  position: absolute;
+  vertical-align: top;
+}
+
+.tabs {
+  ul {
+    border-bottom: none
+  }
+  .is-active {
+    a {
+      z-index: 2;
+      border-top: 3px solid #f3565d;
+      border-left: 1px solid #dbdbdb  ;
+      border-right: 1px solid #dbdbdb ;
+      border-bottom: none;
+      margin-top: 0;
+      position: relative;
+    }
+  }
+}
+
+
+
+.mdi-24px.mdi:before {
+  font-size: 18px !important;
+}
+
+.button {
+  font-size: 0.85rem !important;
+}
+
+.switch input[type=checkbox]:checked+.check {
+  background: #22c65b !important
+}
+
+.switch:hover input[type=checkbox]:checked+.check {
+  background: #22c65b !important
+}
+
+.menu-list li a {
+  border-radius: 0;
+}
+
+.loginUserInfo {
+  min-width: 189px;
+  display: inline-block;
+  width: 100%;
+  padding: 20px 10px;
+  border-bottom: 2px solid #e0e3f2;
+  /*background-color:#edf3f6;*/
+  background-color: rgba(255, 255, 255, 0.95);
+  box-sizing: border-box;
+}
+
+.loginUserInfo .userPhoto {
+  margin: 0 15% 10px;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 4px solid #f1f3fa;
+  box-shadow: inset 0px 10px 0px rgba(255, 255, 255, 0.8);
+  height: 130px;
+  width: 130px;
+}
+
+.loginUserInfo .userPhoto img {
+  width: 100%;
+}
+
+.loginUserInfo .userName {
+  display: inline-block;
+  width: 100%;
+  text-align: Center;
+  font-size: 16px;
+  color: #34495e;
+  font-weight: bold;
+}
+
+.loginUserInfo .userTitle {
+  display: inline-block;
+  width: 100%;
+  text-align: Center;
+  font-size: 12px;
+  color: #34495e;
+  margin-top: 2px;
+  font-weight: bold;
+  line-height: 16px;
+}
+
+.loginUserInfo .userId {
+  display: inline-block;
+  width: 100%;
+  text-align: Center;
+  font-size: 11px;
+  color: #34495e;
+  font-weight: bold;
+  margin-top: 0px;
+}
+

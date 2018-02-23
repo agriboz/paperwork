@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="buttons has-addons is-right">
+    <div class="buttons has-addons is-right" v-if="!notEditable">
       <a @click.prevent="addDocument" class="button is-info">Evrak Ekle</a>
     </div>
     <div v-if="showDocument" class="form-wrapper" title="Evrak Ekle" style="margin-bottom:30px">
@@ -36,9 +36,10 @@
           <b-table-column field="sendRemindingEmail" label="Hatırlatma E-Postası Gönderilsin mi?" sortable>
               {{ props.row.sendRemindingEmail ? 'Evet' : 'Hayır' }}
           </b-table-column>
-          <b-table-column field="sendRemindingEmail" label="Durum" sortable>
+          <b-table-column field="documentStatus" label="Durum" sortable>
             <b-field>
               <b-select placeholder="Seçiniz..."
+                        :disabled="notEditable || !edit"
                         @change.native="changeDocumentStatus(props.row.document.id, props.row.documentStatus)"
                         v-model="props.row.documentStatus">
                 <option :key="d.in" :value="d"  v-for="d in shared.documentStatus" >
@@ -69,7 +70,7 @@
 import debounce from 'lodash/debounce'
 import { mapState, mapActions } from 'vuex'
   export default {
-    props: ['item', 'edit'],
+    props: ['item', 'edit', 'notEditable'],
     data: () => ({
       searchStr: '',
       selectedDocument: null,

@@ -1,5 +1,7 @@
 <template>
-  <section class="section">
+  <section>
+    <h1 class="title is-size-5">Beyaz Yaka İşe Giriş</h1>
+    <hr>
     <document-status :item="widgetForm.item" :edit="false" />
     <paper-work-widget :item="widgetForm.item" :edit="false" :search="false" />
   </section>

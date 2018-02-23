@@ -1,20 +1,18 @@
 <template>
   <section>
-    {{disableDocumentList}}
       <b-tabs v-model="activeTab" @change="tabChanged">
         <b-tab-item label="Personel Bilgileri" icon="account-box">
           <employee-information
             :item="item"
             :edit="edit"
             :search="search"
-            :identity-number="true"
-            :position="position" />
+            :identity-number="true"/>
         </b-tab-item>
         <b-tab-item label="Personel Detay Bilgileri" icon="account-card-details">
           <employee-information-detail :item="item" :edit="edit" :search="search" />
         </b-tab-item>
         <b-tab-item label="Organizasyon Bilgileri" icon="lan">
-          <organization-detail :item="item" :edit="edit" :search="search" />
+          <organization-detail :item="item"  :edit="edit" :search="search" />
         </b-tab-item>
 
         <b-tab-item label="Evrak Listesi" icon="file-document" :disabled="!disableDocumentList">
@@ -22,49 +20,60 @@
         </b-tab-item>
       </b-tabs>
       <div class="field is-grouped">
-        <p class="control">
-          <button class="button is-primary" @click="startEmployment" type="submit">Personel Girişini Başlat</button>
+
+        <p class="control" v-if="!widgetForm.editItem.flowId">
+            <button class="button is-primary"
+                    :disabled="canStartEmployment"
+                    @click="startEmployment(item)">Personel Girişini Başlat</button>
         </p>
-        <p class="control">
-          <button class="button is-primary" :disabled="$store.state.widgetForm.canStartEmploymentIsInvalid" type="submit">Personel Girişini Başlat</button>
+        <p class="control"
+           v-if="edit && widgetForm.editItem.flowId && !documentDetail.mandatoryDocuments">
+          <button class="button is-warning"
+                  @click="startBPProcess">BP Bilgilendirme Gönder</button>
         </p>
-        <p class="control">
-          <button class="button is-warning" v-if="edit && widgetForm.editItem.flowId > 0 && !documentDetail.mandatoryDocuments" value="isBP"  name="isBP">BP Onayına Gönder</button>
-        </p>
-        <p class="control">
+        <p class="control" v-if="widgetForm.editItem.flowId">
           <button class="button is-success"
-                  v-if="edit && documentDetail.mandatoryDocuments"
-                  >Evrak Takibini Başlat</button>
+                  @click="sendToDocumentationTeam(item)">Dökümantasyon Ekibine Gönder</button>
         </p>
-        <p class="control">
+        <p class="control" v-if="!widgetForm.editItem.flowId">
           <button class="button is-info"
                   @click="saveAsDraft"
                   :disabled="!isDraft">Taslak Olarak Kaydet</button>
         </p>
 
         <p class="control" v-if="edit && canCancel">
-          <button class="button" name="isCancel" type="submit">Süreci İptal Et</button>
+          <button class="button" name="isCancel">Süreci İptal Et</button>
         </p>
+
         <p class="control">
-          <button class="button is-danger" @click="deleteDocument"  v-if="edit && canDelete" type="submit">Sil</button>
+          <button class="button is-danger"
+                  @click="deleteDocument"
+                  v-if="edit && canDelete">Sil</button>
         </p>
       </div>
+      <b-modal :active.sync="isDocumentationModal.open">
+        <documentation-team :item="isDocumentationModal.data"></documentation-team>
+      </b-modal>
     </section>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { required, minLength, maxLength } from 'vuelidate/lib/validators'
 import EmployeeInformation from './EmployeeInformation'
 import EmployeeInformationDetail from './EmployeeInformationDetail'
 import OrganizationDetail from './OrganizationDetail'
 import DocumentDetail from './DocumentDetail'
+import DocumentationTeam from '../DocumentationTeam'
 
 export default {
-  props: ['edit', 'search', 'item', 'position'],
-  data() {
+  props: ['edit', 'search', 'item'],
+  data () {
     return {
-      activeTab: 0
+      activeTab: 0,
+      isDocumentationModal: {
+        open: false,
+        data: this.item
+      }
     }
   },
 
@@ -87,6 +96,9 @@ export default {
       return this.widgetForm.editItem.flowId === 0
     },
 
+    canStartEmployment () {
+      return this.widgetForm.isFirstTabInValid || this.widgetForm.isSecondTabInValid || this.widgetForm.isThirdTabInValid
+    },
 
     isDraft () {
       if (this.edit) {
@@ -102,8 +114,15 @@ export default {
 
   methods: {
     ...mapActions({
-      startEmployment: 'widgetForm/startEmployment'
+      startEmployment: 'widgetForm/startEmployment',
+      startBPProcess: 'widgetForm/startBPProcess'
     }),
+
+    sendToDocumentationTeam () {
+      this.documentDetail.mandatoryDocuments
+       ? this.$store.dispatch('widgetForm/sendToDocumentationTeam', this.item)
+        : this.isDocumentationModal.open = true
+    },
 
     deleteDocument () {
       this.$store.dispatch('widgetForm/deleteDocument')
@@ -142,7 +161,8 @@ export default {
     EmployeeInformation,
     EmployeeInformationDetail,
     OrganizationDetail,
-    DocumentDetail
+    DocumentDetail,
+    DocumentationTeam
   }
 }
 </script>

@@ -2,45 +2,42 @@
   <div class="columns">
     <div class="column">
       <b-field label="Durum">
-          <b-select placeholder="Seçiniz..." v-model="item.ebaStatus" @blur="setItem">
-              <option>
-                  Sms
+        {{shared.ebaStatus[0]}}
+          <b-select placeholder="Seçiniz..." v-model="item.ebaStatus">
+              <option :key="e.id" :value="e" v-for="e in shared.ebaStatus">
+                  {{e.name}}
               </option>
           </b-select>
       </b-field>
       <b-field label="Talep Numarası">
-        <b-input v-model="item.requestIncidentNo" placeholder="Talep Numarası" @blur="setItem"></b-input>
+        <b-input v-model="item.requestIncidentNo" placeholder="Talep Numarası"></b-input>
       </b-field>
       <b-field label="Hazırlık E-Postası Talep Numarası">
-        <b-input v-model="item.requestEmailIncidentNo" placeholder="Hazırlık E-Postası Talep Numarası" @blur="setItem"></b-input>
+        <b-input v-model="item.requestEmailIncidentNo" placeholder="Hazırlık E-Postası Talep Numarası"></b-input>
       </b-field>
     </div>
   </div>
 </template>
 
 <script>
-import { required, minLength } from 'vuelidate/lib/validators'
+import { mapState, mapActions } from 'vuex'
 
 export default {
-  data () {
-    return {
-      item: {}
-    }
-  },
-
-  validations: {
-    item: {
-      name: {
-        required,
-        minLength: minLength(4)
-      }
-    }
+  props: ['item'],
+  computed: {
+    ...mapState(['shared', 'widgetForm'])
   },
   methods: {
-    setItem () {
-      console.log(this.item)
-      this.$store.commit('whiteCollar/item', this.item)
-    }
+    ...mapActions({
+      getEbaStatus : 'shared/getEbaStatus'
+    })
+  },
+  beforeMount () {
+    this.getEbaStatus()
+  },
+
+  created () {
+    this.item.ebaStatus = this.shared.ebaStatus[0]
   }
 
 }

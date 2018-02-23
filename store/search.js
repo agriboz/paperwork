@@ -13,7 +13,7 @@ const search = {
       const searchData = rootState.widgetForm.item
       const { data } = await this.$axios.post(`document/employee/search`, searchData)
       return data ? commit('setSearchResult', data) : null
-    },
+    }
   }
 }
 

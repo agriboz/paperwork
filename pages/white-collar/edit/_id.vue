@@ -13,6 +13,7 @@ import PaperWorkWidget from '@/components/PaperWorkWidget'
   export default {
     async fetch ({ store, params }) {
       await store.dispatch('widgetForm/getEditItem', params.id)
+      await store.dispatch('documentDetail/getMandatoryDocuments', params.id)
     },
     computed: {
       ...mapState(['widgetForm'])

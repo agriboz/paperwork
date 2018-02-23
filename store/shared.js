@@ -14,7 +14,8 @@ const shared = {
     channels: [],
     welcomeKitTypes: [],
     buddyTypes: [],
-    buddyEmployees: []
+    buddyEmployees: [],
+    ebaStatus: []
   },
   mutations: {
     setEmployee (state, payload) {
@@ -58,6 +59,9 @@ const shared = {
     },
     setBuddyEmployees (state, payload) {
       state.buddyEmployees = payload
+    },
+    setEbaStatus (state, payload) {
+      state.ebaStatus = payload
     }
 
   },
@@ -73,6 +77,12 @@ const shared = {
       const { data } = await this.$axios.get(`employee`)
 
       return data ? commit('setEmployee', data) : null
+    },
+
+    async getEbaStatus ({ commit }) {
+      const { data } = await this.$axios.get(`document/eba/status`)
+
+      return data ? commit('setEbaStatus', data) : null
     },
 
     async getOrganizations ({ dispatch, commit }) {

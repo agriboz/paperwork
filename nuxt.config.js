@@ -14,13 +14,18 @@ module.exports = {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext'
+      },
+      {
+        rel: 'stylesheet',
         href: '//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css'
       }
     ]
   },
 
-  plugins: ['~/plugins/buefy', '~/plugins/vuelidate', '~/plugins/axios'],
-  css: ['animate.css/animate.min.css', '~/assets/style.css'],
+  plugins: ['~/plugins/buefy', '~/plugins/vuelidate', '~/plugins/axios', '~/plugins/excel', '~/plugins/maskedInput'],
+
+  css: ['~/assets/style.scss'],
   modules: [
     '@nuxtjs/axios'
   ],
