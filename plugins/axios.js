@@ -2,58 +2,55 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 Vue.use(Vuex)
-const {
-  $toast
-} = Vue.prototype
+const { $toast } = Vue.prototype
 
-export default function ({
-  app: {
-    $axios,
-    store
-  }
-}) {
+export default function({ app: { $axios, store } }) {
   $axios.interceptors.response.use(
     response => {
-      var dateRegExMs = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.{1}\d{1,7}-\d{2}:\d{2}$/;
-      var dateRegEx = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/;
-      var dateRegExShort = /^(\d{4})-(\d{2})-(\d{2})$/;
+      var dateRegExMs = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.{1}\d{1,7}-\d{2}:\d{2}$/
+      var dateRegEx = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/
+      var dateRegExShort = /^(\d{4})-(\d{2})-(\d{2})$/
 
       function tryMatchDate(dateString) {
         if (dateString.length == 19) {
-          return dateString.match(dateRegEx);
+          return dateString.match(dateRegEx)
         }
         if (dateString.length == 10) {
-          return dateString.match(dateRegExShort);
+          return dateString.match(dateRegExShort)
         }
         if (dateString.length > 26 && dateString.length < 34) {
-          return dateString.match(dateRegExMs);
+          return dateString.match(dateRegExMs)
         }
-        return false;
-      };
-
+        return false
+      }
 
       function convertDateStringsToDates(input) {
         // Ignore things that aren't objects.
-        if (typeof input !== "object")
-          return input;
+        if (typeof input !== 'object') return input
 
         for (var key in input) {
-          if (!input.hasOwnProperty(key))
-            continue;
+          if (!input.hasOwnProperty(key)) continue
 
-          var value = input[key];
-          var match;
+          var value = input[key]
+          var match
 
           // Check for string properties which look like dates.
-          if (typeof value === "string" && (match = tryMatchDate(value))) {
-            var date = new Date(match[1], match[2] - 1, match[3], match[4] || 0, match[5] || 0, match[6] || 0);
-            input[key] = date;
-          } else if (typeof value === "object") {
+          if (typeof value === 'string' && (match = tryMatchDate(value))) {
+            var date = new Date(
+              match[1],
+              match[2] - 1,
+              match[3],
+              match[4] || 0,
+              match[5] || 0,
+              match[6] || 0
+            )
+            input[key] = date
+          } else if (typeof value === 'object') {
             // Recurse into object
-            convertDateStringsToDates(value);
+            convertDateStringsToDates(value)
           }
         }
-        return null;
+        return null
       }
 
       if (response.status === 200 && response.config.method !== 'get') {
@@ -69,7 +66,6 @@ export default function ({
       return response
     },
     error => {
-
       if (error.response.status === 401) {
         $toast.open({
           type: 'is-danger',
@@ -99,4 +95,3 @@ export default function ({
     }
   )
 }
-

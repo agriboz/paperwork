@@ -23,10 +23,10 @@
 
     <div class="field is-grouped is-pulled-right is-clearfix">
       <div class="control">
-        <a  @click="isTaskApproved('approve')"  class="button is-success">Onayla</a>
+        <a class="button is-success" @click="isTaskApproved('approve')">Onayla</a>
       </div>
       <div class="control">
-        <a @click="isTaskApproved('reject')" class="button is-danger">Reddet</a>
+        <a class="button is-danger" @click="isTaskApproved('reject')">Reddet</a>
       </div>
     </div>
 
@@ -42,27 +42,23 @@ import EmployeeInformationDetail from '@/components/PaperWorkWidget/EmployeeInfo
 import OrganizationDetail from '@/components/PaperWorkWidget/OrganizationDetail'
 import DocumentDetail from '../../components/PaperWorkWidget/DocumentDetail'
 
-  export default {
-    async fetch ({ store, params }) {
-      await store.dispatch('tasks/getTaskById', params.id)
-    },
-    computed: {
-      ...mapState(['tasks'])
-    },
-    methods: {
-      ...mapActions({
-        isTaskApproved: 'tasks/isTaskApproved'
-      })
-    },
-    components: {
-      EmployeeInformation,
-      EmployeeInformationDetail,
-      OrganizationDetail,
-      DocumentDetail
-    }
+export default {
+  components: {
+    EmployeeInformation,
+    EmployeeInformationDetail,
+    OrganizationDetail,
+    DocumentDetail
+  },
+  async fetch({ store, params }) {
+    await store.dispatch('tasks/getTaskById', params.id)
+  },
+  computed: {
+    ...mapState(['tasks'])
+  },
+  methods: {
+    ...mapActions({
+      isTaskApproved: 'tasks/isTaskApproved'
+    })
   }
+}
 </script>
-
-<style scoped>
-
-</style>

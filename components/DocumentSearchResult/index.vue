@@ -1,5 +1,5 @@
 <template>
-  <div class="form-wrapper" title="Arama Sonuç" id="document-search-result">
+  <div id="document-search-result" class="form-wrapper" title="Arama Sonuç">
     <b-table
       :data="search.data"
       :paginated="ui.tableOpts.isPaginated"
@@ -9,27 +9,27 @@
       default-sort="id">
 
       <template slot-scope="props">
-          <b-table-column field="id" label="ID" sortable numeric>
-              {{ props.row.id }}
-          </b-table-column>
-          <b-table-column field="name" label="Adı Soyadı" sortable>
-              {{ props.row.name }}
-          </b-table-column>
-          <b-table-column field="organization" label="Organizasyon" sortable>
-              {{ props.row.organization.name}}
-          </b-table-column>
-          <b-table-column field="workLocation" label="Lokasyon" sortable>
-              {{ props.row.workLocation.name}}
-          </b-table-column>
-          <b-table-column field="startWorkDate" label="Başlangıç Tarihi" sortable>
-              {{ props.row.startWorkDate !== null ? new Date(props.row.startWorkDate).toLocaleDateString('tr-TR') : '-'}}
-          </b-table-column>
-          <b-table-column field="entryUser.name" label="İşlemi Yapan Personel" sortable>
-              {{ props.row.entryUser.name}}
-          </b-table-column>
-          <b-table-column label="Aksiyon" sortable>
-              <nuxt-link class="button is-primary" :to="'white-collar/edit/' + props.row.id"> Detay</nuxt-link>
-          </b-table-column>
+        <b-table-column field="id" label="ID" sortable numeric>
+          {{ props.row.id }}
+        </b-table-column>
+        <b-table-column field="name" label="Adı Soyadı" sortable>
+          {{ props.row.name }}
+        </b-table-column>
+        <b-table-column field="organization" label="Organizasyon" sortable>
+          {{ props.row.organization.name }}
+        </b-table-column>
+        <b-table-column field="workLocation" label="Lokasyon" sortable>
+          {{ props.row.workLocation.name }}
+        </b-table-column>
+        <b-table-column field="startWorkDate" label="Başlangıç Tarihi" sortable>
+          {{ props.row.startWorkDate !== null ? new Date(props.row.startWorkDate).toLocaleDateString('tr-TR') : '-' }}
+        </b-table-column>
+        <b-table-column field="entryUser.name" label="İşlemi Yapan Personel" sortable>
+          {{ props.row.entryUser.name }}
+        </b-table-column>
+        <b-table-column label="Aksiyon" sortable>
+          <nuxt-link :to="'white-collar/edit/' + props.row.id" class="button is-primary"> Detay</nuxt-link>
+        </b-table-column>
       </template>
       <template slot="empty">
         <section class="section">
@@ -37,8 +37,7 @@
             <p>
               <b-icon
                 icon="information-outline"
-                size="is-large">
-              </b-icon>
+                size="is-large"/>
             </p>
             <p>Herhangi bir sonuç bulunamadı.</p>
           </div>
@@ -50,12 +49,10 @@
 </template>
 
 <script>
-
 import { mapState } from 'vuex'
-  export default {
-    computed: {
-      ...mapState(['ui', 'search'])
-    }
+export default {
+  computed: {
+    ...mapState(['ui', 'search'])
   }
+}
 </script>
-

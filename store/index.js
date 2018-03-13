@@ -29,5 +29,3 @@ const createStore = () => {
 localStorage.setItem('state', JSON.stringify(createStore().state))
 
 export default createStore
-
-

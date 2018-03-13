@@ -1,5 +1,5 @@
 <template>
-  <section class="section">
+  <section>
     <document-status :item="widgetForm.editItem" :edit="true" />
     <paper-work-widget :item="widgetForm.editItem" :position="true" :edit="true" />
   </section>
@@ -10,21 +10,17 @@ import { mapState } from 'vuex'
 import DocumentStatus from '@/components/DocumentStatus'
 import PaperWorkWidget from '@/components/PaperWorkWidget'
 
-  export default {
-    async fetch ({ store, params }) {
-      await store.dispatch('widgetForm/getEditItem', params.id)
-      await store.dispatch('documentDetail/getMandatoryDocuments', params.id)
-    },
-    computed: {
-      ...mapState(['widgetForm'])
-    },
-    components: {
-      DocumentStatus,
-      PaperWorkWidget
-    }
+export default {
+  components: {
+    DocumentStatus,
+    PaperWorkWidget
+  },
+  async fetch({ store, params }) {
+    await store.dispatch('widgetForm/getEditItem', params.id)
+    await store.dispatch('documentDetail/getMandatoryDocuments', params.id)
+  },
+  computed: {
+    ...mapState(['widgetForm'])
   }
+}
 </script>
-
-<style scoped>
-
-</style>

@@ -1,7 +1,8 @@
 const ui = {
   namespaced: true,
   state: {
-    menu: [{
+    menu: [
+      {
         id: 1,
         name: 'Anasayfa',
         link: '/',
@@ -40,10 +41,9 @@ const ui = {
         id: 6,
         name: 'Görevlerim',
         link: '/tasks',
-          icon: 'file-check',
+        icon: 'file-check',
         visible: true
       }
-
     ],
     tableOpts: {
       isPaginated: true,
@@ -56,20 +56,15 @@ const ui = {
       isLoading: true
     }
   },
-  mutations: {
-
-  },
+  mutations: {},
 
   getters: {
-    menu (state) {
+    menu(state) {
       return state.menu
     }
   },
 
-  actions: {
-
-  }
+  actions: {}
 }
 
 export default ui
-

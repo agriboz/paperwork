@@ -21,37 +21,37 @@
       </div>
       <div class="column">
         <div class="form-wrapper" title="Buddy Bilgileri" style="margin-top:40px; margin-bottom: 20px">
-            <b-field label="Buddy">
-              <b-select placeholder="Seçiniz..."
-                        @input="getBuddy(tasks.item.enrollment.buddyEmployee.id)"
-                        v-model="tasks.item.enrollment.buddyEmployee"
-                        expanded>
-                  <option :key="b.id" :value="b" v-for="b in shared.buddyEmployees">
-                      {{b.name}}
-                  </option>
-              </b-select>
-            </b-field>
-            <b-field label="Sicil Numarası" v-if="tasks.buddyInformation">
-                <b-input :value="tasks.buddyInformation.registry" :disabled="true"></b-input>
-            </b-field>
-            <b-field label="Şirket" v-if="tasks.buddyInformation">
-                <b-input :value="tasks.buddyInformation.company.name" :disabled="true"></b-input>
-            </b-field>
-            <b-field label="Departman" v-if="tasks.buddyInformation">
-                <b-input :value="tasks.buddyInformation.department" :disabled="true"></b-input>
-            </b-field>
-            <b-field label="Lokasyon" v-if="tasks.buddyInformation">
-                <b-input :value="tasks.buddyInformation.location.name" :disabled="true"></b-input>
-            </b-field>
-            <b-field label="Ünvan" v-if="tasks.buddyInformation">
-                <b-input :value="tasks.buddyInformation.title" :disabled="true"></b-input>
-            </b-field>
+          <b-field label="Buddy">
+            <b-select v-model="tasks.item.enrollment.buddyEmployee"
+                      placeholder="Seçiniz..."
+                      expanded
+                      @input="getBuddy(tasks.item.enrollment.buddyEmployee.id)">
+              <option v-for="b in shared.buddyEmployees" :key="b.id" :value="b">
+                {{ b.name }}
+              </option>
+            </b-select>
+          </b-field>
+          <b-field v-if="tasks.buddyInformation" label="Sicil Numarası">
+            <b-input :value="tasks.buddyInformation.registry" :disabled="true"/>
+          </b-field>
+          <b-field v-if="tasks.buddyInformation" label="Şirket">
+            <b-input :value="tasks.buddyInformation.company.name" :disabled="true"/>
+          </b-field>
+          <b-field v-if="tasks.buddyInformation" label="Departman">
+            <b-input :value="tasks.buddyInformation.department" :disabled="true"/>
+          </b-field>
+          <b-field v-if="tasks.buddyInformation" label="Lokasyon">
+            <b-input :value="tasks.buddyInformation.location.name" :disabled="true"/>
+          </b-field>
+          <b-field v-if="tasks.buddyInformation" label="Ünvan">
+            <b-input :value="tasks.buddyInformation.title" :disabled="true"/>
+          </b-field>
+        </div>
+        <div class="field is-grouped is-pulled-right is-clearfix">
+          <div class="control">
+            <a class="button is-success" @click="setBuddy">Buddy Atamasını Yap</a>
           </div>
-          <div class="field is-grouped is-pulled-right is-clearfix">
-            <div class="control">
-              <a @click="setBuddy"  class="button is-success">Buddy Atamasını Yap</a>
-            </div>
-          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -62,31 +62,27 @@ import { mapState, mapActions } from 'vuex'
 import EmployeeInformation from '@/components/PaperWorkWidget/EmployeeInformation'
 import OrganizationDetail from '@/components/PaperWorkWidget/OrganizationDetail'
 
-  export default {
-    async fetch ({ store, params }) {
-      await store.dispatch('tasks/getTaskById', params.id)
-    },
-    computed: {
-      ...mapState(['tasks', 'shared'])
-    },
-    methods: {
-      ...mapActions({
-        getBuddyEmployees: 'shared/getBuddyEmployees',
-        getBuddy: 'tasks/getBuddy',
-        setBuddy: 'tasks/setBuddy'
-      })
-    },
-    async beforeMount () {
-      await this.getBuddyEmployees(this.tasks.item.enrollment.company.id)
-      await this.getBuddy(this.tasks.item.enrollment.buddyEmployee.id)
-    },
-    components: {
-      EmployeeInformation,
-      OrganizationDetail
-    }
+export default {
+  components: {
+    EmployeeInformation,
+    OrganizationDetail
+  },
+  async fetch({ store, params }) {
+    await store.dispatch('tasks/getTaskById', params.id)
+  },
+  computed: {
+    ...mapState(['tasks', 'shared'])
+  },
+  async beforeMount() {
+    await this.getBuddyEmployees(this.tasks.item.enrollment.company.id)
+    await this.getBuddy(this.tasks.item.enrollment.buddyEmployee.id)
+  },
+  methods: {
+    ...mapActions({
+      getBuddyEmployees: 'shared/getBuddyEmployees',
+      getBuddy: 'tasks/getBuddy',
+      setBuddy: 'tasks/setBuddy'
+    })
   }
+}
 </script>
-
-<style scoped>
-
-</style>

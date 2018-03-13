@@ -18,107 +18,114 @@ const shared = {
     ebaStatus: []
   },
   mutations: {
-    setEmployee (state, payload) {
+    setEmployee(state, payload) {
       state.employee = payload
     },
-    setOrganizations (state, payload) {
+    setOrganizations(state, payload) {
       state.organizations = payload
     },
-    setCompanies (state, payload) {
+    setCompanies(state, payload) {
       state.companies = payload
     },
-    setWorkLocations (state, payload) {
+    setWorkLocations(state, payload) {
       state.workLocations = payload
     },
-    setSGKLocations (state, payload) {
+    setSGKLocations(state, payload) {
       state.SGKLocations = payload
     },
-    setHrBusinessPartnerEmployees (state, payload) {
+    setHrBusinessPartnerEmployees(state, payload) {
       state.hrBusinessPartnerEmployees = payload
     },
-    setManagers (state, payload) {
+    setManagers(state, payload) {
       state.managers = payload
     },
-    setCategories (state, payload) {
+    setCategories(state, payload) {
       state.categories = payload
     },
-    setReqruitmentEmployees (state, payload) {
+    setReqruitmentEmployees(state, payload) {
       state.reqruitmentEmployees = payload
     },
-    setDocumentStatus (state, payload) {
+    setDocumentStatus(state, payload) {
       state.documentStatus = payload
     },
-    setChannels (state, payload) {
+    setChannels(state, payload) {
       state.channels = payload
     },
-    setWelcomeKitTypes (state, payload) {
+    setWelcomeKitTypes(state, payload) {
       state.welcomeKitTypes = payload
     },
-    setBuddyTypes (state, payload) {
+    setBuddyTypes(state, payload) {
       state.buddyTypes = payload
     },
-    setBuddyEmployees (state, payload) {
+    setBuddyEmployees(state, payload) {
       state.buddyEmployees = payload
     },
-    setEbaStatus (state, payload) {
+    setEbaStatus(state, payload) {
       state.ebaStatus = payload
     }
-
   },
 
   getters: {
-    isEmployee (state) {
+    isEmployee(state) {
       return state.employee
     }
   },
 
   actions: {
-    async getEmployee ({ commit }) {
+    async getEmployee({ commit }) {
       const { data } = await this.$axios.get(`employee`)
 
       return data ? commit('setEmployee', data) : null
     },
 
-    async getEbaStatus ({ commit }) {
+    async getEbaStatus({ commit }) {
       const { data } = await this.$axios.get(`document/eba/status`)
 
       return data ? commit('setEbaStatus', data) : null
     },
 
-    async getOrganizations ({ dispatch, commit }) {
+    async getOrganizations({ commit }) {
       const { data } = await this.$axios.get(`organization`)
 
       return data ? commit('setOrganizations', data) : null
     },
 
-    async getCompanies ({ commit }, payload) {
+    async getCompanies({ commit }, payload) {
       const { data } = await this.$axios.get(`company/${payload}`)
 
       return data ? commit('setCompanies', data) : null
     },
 
-    async getWorkLocations ({ commit }, payload) {
+    async getWorkLocations({ commit }, payload) {
       const { data } = await this.$axios.get(`company/${payload}/locations`)
 
-      return data ? (commit('setWorkLocations', data), commit('setSGKLocations', data)) : null
-
+      return data
+        ? (commit('setWorkLocations', data), commit('setSGKLocations', data))
+        : null
     },
 
-    async getHrBusinessPartnerEmployees ({ commit }, payload) {
-      const { data } = await this.$axios.get(`organization/${payload}/businesspartners`)
+    async getHrBusinessPartnerEmployees({ commit }, payload) {
+      const { data } = await this.$axios.get(
+        `organization/${payload}/businesspartners`
+      )
 
       return data ? commit('setHrBusinessPartnerEmployees', data) : null
     },
 
-    async getManagers ({ commit }, payload) {
+    async getManagers({ commit }, payload) {
       if (payload.name.length >= 3) {
-        const { data } = await this.$axios.post(`organization/managers`, payload)
+        const { data } = await this.$axios.post(
+          `organization/managers`,
+          payload
+        )
         return data ? commit('setManagers', data) : null
       }
     },
 
-    async getCategories ({ commit }, payload) {
-      const { data } = await this.$axios.get(`organization/${payload}/document/categories`)
+    async getCategories({ commit }, payload) {
+      const { data } = await this.$axios.get(
+        `organization/${payload}/document/categories`
+      )
 
       return data ? commit('setCategories', data) : null
     },
@@ -132,43 +139,42 @@ const shared = {
       return data ? commit('setReqruitmentEmployees', data) : null
     }, */
 
-    async getReqruitmentEmployees ({ commit, rootState }) {
+    async getReqruitmentEmployees({ commit }) {
       const roleId = 4
       const { data } = await this.$axios.get(`roles/${roleId}/employees`)
 
       return data ? commit('setReqruitmentEmployees', data) : null
     },
 
-    async getDocumentStatus ({ commit }) {
+    async getDocumentStatus({ commit }) {
       const { data } = await this.$axios.get(`document/status`)
 
       return data ? commit('setDocumentStatus', data) : null
     },
 
-    async getChannels ({ commit }) {
+    async getChannels({ commit }) {
       const { data } = await this.$axios.get(`contacttypes/basic`)
 
       return data ? commit('setChannels', data) : null
     },
 
-    async getWelcomeKitTypes ({ commit }) {
+    async getWelcomeKitTypes({ commit }) {
       const { data } = await this.$axios.get(`welcomeKitTypes/basic`)
 
       return data ? commit('setWelcomeKitTypes', data) : null
     },
 
-    async getBuddyTypes ({ commit }) {
+    async getBuddyTypes({ commit }) {
       const { data } = await this.$axios.get(`employee/buddyType`)
 
       return data ? commit('setBuddyTypes', data) : null
     },
 
-    async getBuddyEmployees ({ commit }, payload) {
+    async getBuddyEmployees({ commit }, payload) {
       const { data } = await this.$axios.get(`company/${payload}/employees`)
 
       return data ? commit('setBuddyEmployees', data) : null
     }
-
   }
 }
 

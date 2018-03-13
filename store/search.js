@@ -4,14 +4,17 @@ const search = {
     data: []
   },
   mutations: {
-    setSearchResult (state, payload) {
+    setSearchResult(state, payload) {
       state.data = payload
     }
   },
   actions: {
-    async makeSearch ({ commit, rootState }) {
+    async makeSearch({ commit, rootState }) {
       const searchData = rootState.widgetForm.item
-      const { data } = await this.$axios.post(`document/employee/search`, searchData)
+      const { data } = await this.$axios.post(
+        `document/employee/search`,
+        searchData
+      )
       return data ? commit('setSearchResult', data) : null
     }
   }

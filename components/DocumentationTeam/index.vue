@@ -15,15 +15,14 @@
 </template>
 
 <script>
-  import { mapActions, mapState } from 'vuex'
-  export default {
-    props: ['item'],
-    methods: {
-      sendToDocumentationTeam () {
-        this.$store.dispatch('widgetForm/sendToDocumentationTeam', this.item)
-          .then(this.$parent.close)
-      }
+export default {
+  props: ['item'],
+  methods: {
+    sendToDocumentationTeam() {
+      this.$store
+        .dispatch('widgetForm/sendToDocumentationTeam', this.item)
+        .then(this.$parent.close)
     }
   }
+}
 </script>
-

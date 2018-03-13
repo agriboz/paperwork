@@ -11,27 +11,26 @@
 import { mapState, mapMutations } from 'vuex'
 import DocumentStatus from '@/components/DocumentStatus'
 import PaperWorkWidget from '@/components/PaperWorkWidget'
-import resetState from '../../store'
 
-  export default {
-    computed: {
-      ...mapState(['widgetForm'])
-    },
-    methods: {
-      ...mapMutations({resetState: 'widgetForm/item'})
-    },
-    components: {
-      DocumentStatus,
-      PaperWorkWidget
-    },
-
-    beforeMount () {
-      const state = JSON.parse(localStorage.getItem('state'))
-      this.resetState(state.widgetForm.item)
-    }
+export default {
+  components: {
+    DocumentStatus,
+    PaperWorkWidget
+  },
+  computed: {
+    ...mapState(['widgetForm'])
+  },
+  beforeMount() {
+    const state = JSON.parse(localStorage.getItem('state'))
+    this.resetStateItem(state.widgetForm.item)
+    this.resetStateEditItem(state.widgetForm.editItem)
+    console.log(state.widgetForm.editItem)
+  },
+  methods: {
+    ...mapMutations({
+      resetStateItem: 'widgetForm/item',
+      resetStateEditItem: 'widgetForm/editItem'
+    })
   }
+}
 </script>
-
-<style scoped>
-
-</style>

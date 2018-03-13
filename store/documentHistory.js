@@ -4,16 +4,17 @@ const documentHistory = {
     data: []
   },
   mutations: {
-    setDocumentHistory (state, payload) {
+    setDocumentHistory(state, payload) {
       state.data = payload
     }
   },
   actions: {
-    async getDocumentHistory ({ commit, rootState }) {
-      const flowId = rootState.widgetForm.editItem.flowId
-      const { data } = await this.$axios.get(`document/employee/flow/${flowId}/history`)
+    async getDocumentHistory({ commit, rootState }) {
+      // const flowId = rootState.widgetForm.editItem.flowId
+      const id = rootState.widgetForm.editItem.id
+      const { data } = await this.$axios.get(`sendinginfo/documentmaster/${id}`)
       return data ? commit('setDocumentHistory', data) : null
-    },
+    }
   }
 }
 

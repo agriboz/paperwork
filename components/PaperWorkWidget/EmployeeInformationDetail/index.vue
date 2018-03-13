@@ -1,27 +1,26 @@
 <template>
   <div class="columns">
     <div class="column">
-      <b-field label="İşe Alım Uzmanı"
-               :type="$v.item.enrollment.recruitmentEmployee.$error ? 'is-danger' : ''"
-               :message="$v.item.enrollment.recruitmentEmployee.$error ? 'Zorunlu alan': ''">
-        <b-select placeholder="Seçiniz..."
-                  @input="$v.item.enrollment.recruitmentEmployee.$touch()"
-                  v-model="item.enrollment.recruitmentEmployee" expanded>
-          <option :key="r.id" :value="r" v-for="r in shared.reqruitmentEmployees">
-            {{r.name}}
+      <b-field :type="$v.item.enrollment.recruitmentEmployee.$error ? 'is-danger' : ''"
+               :message="$v.item.enrollment.recruitmentEmployee.$error ? 'Zorunlu alan': ''"
+               label="İşe Alım Uzmanı">
+        <b-select v-model="item.enrollment.recruitmentEmployee" expanded
+                  placeholder="Seçiniz..."
+                  @input="$v.item.enrollment.recruitmentEmployee.$touch()">
+          <option v-for="r in shared.reqruitmentEmployees" :key="r.id" :value="r">
+            {{ r.name }}
           </option>
         </b-select>
       </b-field>
 
-      <b-field label="İşe Başlangıç Tarihi"
-               :type="$v.item.enrollment.startWorkDate.$error ? 'is-danger' : ''"
-               :message="$v.item.enrollment.startWorkDate.$error ? 'Zorunlu alan': ''">
+      <b-field :type="$v.item.enrollment.startWorkDate.$error ? 'is-danger' : ''"
+               :message="$v.item.enrollment.startWorkDate.$error ? 'Zorunlu alan': ''"
+               label="İşe Başlangıç Tarihi">
         <b-datepicker
-          @input="$v.item.enrollment.startWorkDate.$touch()"
           v-model="item.enrollment.startWorkDate"
           placeholder="Seçiniz..."
-          icon="calendar-today">
-        </b-datepicker>
+          icon="calendar-today"
+          @input="$v.item.enrollment.startWorkDate.$touch()"/>
       </b-field>
 
       <div class="field">
@@ -29,19 +28,20 @@
           Anket Gönderildi
         </b-switch>
       </div>
-      <b-field label="Anket Gönderilen Yönetici"
+      <b-field v-if="!search && item.enrollment.isSurveySent"
                :type="$v.item.enrollment.channel.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.channel.$error ? 'Zorunlu alan': ''"
-               v-if="!search && item.enrollment.isSurveySent">
-        <b-select placeholder="Seçiniz..."
-                  @input="$v.item.enrollment.channel.$touch()"
-                  v-model="item.enrollment.channel" expanded>
+               label="Anket Gönderilen Yönetici">
+        <b-select v-model="item.enrollment.channel"
+                  placeholder="Seçiniz..."
+                  expanded
+                  @input="$v.item.enrollment.channel.$touch()">
           <option>
             Sms
           </option>
         </b-select>
       </b-field>
-      <div class="field" v-if="!search">
+      <div v-if="!search" class="field">
         <b-switch v-model="item.enrollment.isTookEngilshExam">
           İngilizce Sınavı Yapıldı
         </b-switch>
@@ -56,30 +56,30 @@
           Aileyi kapsıyor mu?
         </b-switch>
       </div>
-      <div class="field" v-if="!search">
+      <div v-if="!search" class="field">
         <b-switch v-model="item.enrollment.isSendWelcomeKit" @input="checkModelStatus">
           Hoşgeldin kiti gönderilecek mi?
         </b-switch>
       </div>
-      <b-field label="Kit Tipi"
+      <b-field v-if="!search && item.enrollment.isSendWelcomeKit"
                :type="$v.item.enrollment.welcomeKitType.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.welcomeKitType.$error ? 'Zorunlu alan': ''"
-               v-if="!search && item.enrollment.isSendWelcomeKit">
-        <b-select placeholder="Seçiniz..."
-                  v-model="item.enrollment.welcomeKitType"
-                  @input="$v.item.enrollment.welcomeKitType.$touch()" expanded>
-          <option :key="w.id" :value="w" v-for="w in shared.welcomeKitTypes">
-            {{w.name}}
+               label="Kit Tipi">
+        <b-select v-model="item.enrollment.welcomeKitType"
+                  placeholder="Seçiniz..."
+                  expanded
+                  @input="$v.item.enrollment.welcomeKitType.$touch()">
+          <option v-for="w in shared.welcomeKitTypes" :key="w.id" :value="w">
+            {{ w.name }}
           </option>
         </b-select>
       </b-field>
-      <b-field label="Duyuru Detayı" v-if="!search">
-        <b-input type="textarea"
-                 v-model="item.enrollment.announcementDetail"
+      <b-field v-if="!search" label="Duyuru Detayı">
+        <b-input v-model="item.enrollment.announcementDetail"
+                 type="textarea"
                  minlength="10"
                  maxlength="300"
-                 placeholder="Duyuru Detayı">
-        </b-input>
+                 placeholder="Duyuru Detayı"/>
       </b-field>
     </div>
     <div class="column">
@@ -108,137 +108,117 @@
           Taşeron Firma Geçişi
         </b-switch>
       </div>
-      <b-field label="Taşeron Firma Adı"
+      <b-field v-if="item.enrollment.isOutsourceTransfer"
                :type="$v.item.enrollment.outSourceTransferCompany.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.outSourceTransferCompany.$error ? 'Zorunlu alan': ''"
-               v-if="item.enrollment.isOutsourceTransfer">
+               label="Taşeron Firma Adı">
         <b-input v-model="item.enrollment.outSourceTransferCompany"
-                 @input="$v.item.enrollment.outSourceTransferCompany.$touch()" ></b-input>
+                 @input="$v.item.enrollment.outSourceTransferCompany.$touch()" />
       </b-field>
-      <b-field label="İşe Giriş Başlangıç Tarihi "
+      <b-field v-if="item.enrollment.isOutsourceTransfer"
                :type="$v.item.enrollment.startWorkDateBegin.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.startWorkDateBegin.$error ? 'Zorunlu alan': ''"
-               v-if="item.enrollment.isOutsourceTransfer">
-        <b-datepicker
-          @input="$v.item.enrollment.startWorkDateBegin.$touch()"
-          v-model="item.enrollment.startWorkDateBegin"
-          placeholder="Seçiniz..."
-          icon="calendar-today">
-        </b-datepicker>
+               label="İşe Giriş Başlangıç Tarihi ">
+        <b-datepicker v-model="item.enrollment.startWorkDateBegin"
+                      placeholder="Seçiniz..."
+                      icon="calendar-today"
+                      @input="$v.item.enrollment.startWorkDateBegin.$touch()"/>
       </b-field>
-      <b-field label="İşe Giriş Bitiş Tarihi "
+      <b-field v-if="item.enrollment.isOutsourceTransfer"
                :type="$v.item.enrollment.startWorkDateEnd.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.startWorkDateEnd.$error ? 'Zorunlu alan': ''"
-               v-if="item.enrollment.isOutsourceTransfer">
-        <b-datepicker
-          @input="$v.item.enrollment.startWorkDateEnd.$touch()"
-          v-model="item.enrollment.startWorkDateEnd"
-          placeholder="Seçiniz..."
-          icon="calendar-today">
-        </b-datepicker>
+               label="İşe Giriş Bitiş Tarihi ">
+        <b-datepicker v-model="item.enrollment.startWorkDateEnd"
+                      placeholder="Seçiniz..."
+                      icon="calendar-today"
+                      @input="$v.item.enrollment.startWorkDateEnd.$touch()"/>
       </b-field>
-      <b-field label="Kıdem Başlangıç Tarihi"
+      <b-field v-if="item.enrollment.isOutsourceTransfer"
                :type="$v.item.enrollment.seniorityStartDateBegin.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.seniorityStartDateBegin.$error ? 'Zorunlu alan': ''"
-               v-if="item.enrollment.isOutsourceTransfer">
-        <b-datepicker
-          @input="$v.item.enrollment.seniorityStartDateBegin.$touch()"
-          v-model="item.enrollment.seniorityStartDateBegin"
-          placeholder="Seçiniz..."
-          icon="calendar-today">
-        </b-datepicker>
+               label="Kıdem Başlangıç Tarihi">
+        <b-datepicker v-model="item.enrollment.seniorityStartDateBegin"
+                      placeholder="Seçiniz..."
+                      icon="calendar-today"
+                      @input="$v.item.enrollment.seniorityStartDateBegin.$touch()"/>
       </b-field>
-      <b-field label="Kıdem Başlangıç Bitiş Tarihi"
+      <b-field v-if="item.enrollment.isOutsourceTransfer"
                :type="$v.item.enrollment.seniorityStartDateEnd.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.seniorityStartDateEnd.$error ? 'Zorunlu alan': ''"
-               v-if="item.enrollment.isOutsourceTransfer">
-        <b-datepicker
-          @input="$v.item.enrollment.seniorityStartDateEnd.$touch()"
-          v-model="item.enrollment.seniorityStartDateEnd"
-          placeholder="Seçiniz..."
-          icon="calendar-today">
-        </b-datepicker>
+               label="Kıdem Başlangıç Bitiş Tarihi">
+        <b-datepicker v-model="item.enrollment.seniorityStartDateEnd"
+                      placeholder="Seçiniz..."
+                      icon="calendar-today"
+                      @input="$v.item.enrollment.seniorityStartDateEnd.$touch()"/>
       </b-field>
-      <b-field label="Çıkış Tarihi"
+      <b-field v-if="item.enrollment.isOutsourceTransfer"
                :type="$v.item.enrollment.leaveDateBegin.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.leaveDateBegin.$error ? 'Zorunlu alan': ''"
-               v-if="item.enrollment.isOutsourceTransfer">
-        <b-datepicker
-          @input="$v.item.enrollment.leaveDateBegin.$touch()"
-          v-model="item.enrollment.leaveDateBegin"
-          placeholder="Seçiniz..."
-          icon="calendar-today">
-        </b-datepicker>
+               label="Çıkış Tarihi">
+        <b-datepicker v-model="item.enrollment.leaveDateBegin"
+                      placeholder="Seçiniz..."
+                      icon="calendar-today"
+                      @input="$v.item.enrollment.leaveDateBegin.$touch()"/>
       </b-field>
-      <b-field label="Çıkış Tarihi"
+      <b-field v-if="item.enrollment.isOutsourceTransfer"
                :type="$v.item.enrollment.leaveDateEnd.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.leaveDateEnd.$error ? 'Zorunlu alan': ''"
-               v-if="item.enrollment.isOutsourceTransfer">
-        <b-datepicker
-          @input="$v.item.enrollment.leaveDateEnd.$touch()"
-          v-model="item.enrollment.leaveDateEnd"
-          placeholder="Seçiniz..."
-          icon="calendar-today">
-        </b-datepicker>
+               label="Çıkış Tarihi">
+        <b-datepicker v-model="item.enrollment.leaveDateEnd"
+                      placeholder="Seçiniz..."
+                      icon="calendar-today"
+                      @input="$v.item.enrollment.leaveDateEnd.$touch()"/>
       </b-field>
-      <b-field label="Haklarıyla Devir Başlangıç Tarihi"
+      <b-field v-if="item.enrollment.isOutsourceTransfer"
                :type="$v.item.enrollment.transferDateBegin.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.transferDateBegin.$error ? 'Zorunlu alan': ''"
-               v-if="item.enrollment.isOutsourceTransfer">
-        <b-datepicker
-          @input="$v.item.enrollment.transferDateBegin.$touch()"
-          v-model="item.enrollment.transferDateBegin"
-          placeholder="Seçiniz..."
-          icon="calendar-today">
-        </b-datepicker>
+               label="Haklarıyla Devir Başlangıç Tarihi">
+        <b-datepicker v-model="item.enrollment.transferDateBegin"
+                      placeholder="Seçiniz..."
+                      icon="calendar-today"
+                      @input="$v.item.enrollment.transferDateBegin.$touch()"/>
       </b-field>
-      <b-field label="Haklarıyla Devir Bitiş Tarihi"
+      <b-field v-if="item.enrollment.isOutsourceTransfer"
                :type="$v.item.enrollment.transferDateEnd.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.transferDateEnd.$error ? 'Zorunlu alan': ''"
-               v-if="item.enrollment.isOutsourceTransfer">
-        <b-datepicker
-          @input="$v.item.enrollment.transferDateEnd.$touch()"
-          v-model="item.enrollment.transferDateEnd"
-          placeholder="Seçiniz..."
-          icon="calendar-today">
-        </b-datepicker>
+               label="Haklarıyla Devir Bitiş Tarihi">
+        <b-datepicker v-model="item.enrollment.transferDateEnd"
+                      placeholder="Seçiniz..."
+                      icon="calendar-today"
+                      @input="$v.item.enrollment.transferDateEnd.$touch()" />
       </b-field>
       <b-field grouped>
-        <b-field label="İzin Yükü"
+        <b-field v-if="item.enrollment.isOutsourceTransfer"
                  :type="$v.item.enrollment.leaveDayCostBegin.$error ? 'is-danger' : ''"
                  :message="$v.item.enrollment.leaveDayCostBegin.$error ? 'Zorunlu alan': ''"
-                 expanded
-                 v-if="item.enrollment.isOutsourceTransfer">
+                 label="İzin Yükü"
+                 expanded>
 
           <b-field>
-            <b-input placeholder="İzin Yükü Başlangıç Tarihi"
-                     @input="$v.item.enrollment.leaveDayCostBegin.$touch()"
-                     v-model="item.enrollment.leaveDayCostBegin"
+            <b-input v-model="item.enrollment.leaveDayCostBegin"
+                     placeholder="İzin Yükü Başlangıç Tarihi"
                      type="number"
                      min="1"
-                     max="99">
-            </b-input>
-            <b-input placeholder="İzin Yükü Bitiş Tarihi"
-                     @input="$v.item.enrollment.leaveDayCostEnd.$touch()"
-                     v-model="item.enrollment.leaveDayCostEnd"
+                     max="99"
+                     @input="$v.item.enrollment.leaveDayCostBegin.$touch()" />
+            <b-input v-model="item.enrollment.leaveDayCostEnd"
+                     placeholder="İzin Yükü Bitiş Tarihi"
                      type="number"
                      min="1"
-                     max="99">
-            </b-input>
+                     max="99"
+                     @input="$v.item.enrollment.leaveDayCostEnd.$touch()"/>
 
           </b-field>
         </b-field>
       </b-field>
-      <b-field label="Diğer Notlar" v-if="!search">
-        <b-input type="textarea"
-
-                 v-model="item.enrollment.otherNotes"
+      <b-field v-if="!search" label="Diğer Notlar">
+        <b-input v-model="item.enrollment.otherNotes"
+                 type="textarea"
                  minlength="10"
                  maxlength="300"
-                 placeholder="Diğer Notlar">
-        </b-input>
+                 placeholder="Diğer Notlar"/>
       </b-field>
-      <span>{{isSecondTabInValid}}</span>
+      <span>{{ isSecondTabInValid }}</span>
     </div>
   </div>
 </template>
@@ -260,67 +240,67 @@ export default {
           required
         },
         channel: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isSurveySent
           })
         },
         welcomeKitType: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isSendWelcomeKit
           })
         },
         seniorityStartDateBegin: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isOutsourceTransfer
           })
         },
         seniorityStartDateEnd: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isOutsourceTransfer
           })
         },
         leaveDateBegin: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isOutsourceTransfer
           })
         },
         leaveDateEnd: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isOutsourceTransfer
           })
         },
         transferDateBegin: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isOutsourceTransfer
           })
         },
         transferDateEnd: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isOutsourceTransfer
           })
         },
         leaveDayCostBegin: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isOutsourceTransfer
           })
         },
         leaveDayCostBeginEnd: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isOutsourceTransfer
           })
         },
         startWorkDateBegin: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isOutsourceTransfer
           })
         },
         startWorkDateEnd: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isOutsourceTransfer
           })
         },
         outSourceTransferCompany: {
-          requiredIf: requiredIf((vueInstance) => {
+          requiredIf: requiredIf(vueInstance => {
             return vueInstance.isOutsourceTransfer
           })
         }
@@ -330,16 +310,23 @@ export default {
   computed: {
     ...mapState(['shared']),
 
-    isSecondTabInValid () {
-      return this.$store.commit('widgetForm/isSecondTabInValid', this.$v.$invalid)
+    isSecondTabInValid() {
+      return this.$store.commit(
+        'widgetForm/isSecondTabInValid',
+        this.$v.$invalid
+      )
     },
 
-    isCompanyChanged () {
+    isCompanyChanged() {
       return this.$store.state.widgetForm.isCompanyChanged
-        ? (this.getReqruitmentEmployees(), this.$store.commit('widgetForm/isCompanyChanged', false)) : null
-    },
-
-
+        ? (this.getReqruitmentEmployees(),
+          this.$store.commit('widgetForm/isCompanyChanged', false))
+        : null
+    }
+  },
+  mounted() {
+    this.getWelcomeKitTypes()
+    this.getReqruitmentEmployees()
   },
   methods: {
     ...mapActions({
@@ -347,7 +334,7 @@ export default {
       getWelcomeKitTypes: 'shared/getWelcomeKitTypes'
     }),
 
-    checkModelStatus () {
+    checkModelStatus() {
       if (!this.item.enrollment.isSurveySent) {
         delete this.item.enrollment.channel
       }
@@ -371,20 +358,13 @@ export default {
         delete this.item.enrollment.leaveDayCostEnd
         delete this.item.enrollment.outSourceTransferCompany
       }
-
     }
-  },
-
-  mounted () {
-    this.getWelcomeKitTypes()
-    this.getReqruitmentEmployees()
   }
-
 }
 </script>
 
 <style>
 .b-tabs .tab-content {
-  overflow: visible
+  overflow: visible;
 }
 </style>
