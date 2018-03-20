@@ -21,6 +21,9 @@
         <b-table-column field="workLocation" label="Lokasyon" sortable>
           {{ props.row.workLocation.name }}
         </b-table-column>
+        <b-table-column field="ebaStatus.name" label="Durum" sortable>
+          {{ props.row.ebaStatus.name }}
+        </b-table-column>
         <b-table-column field="startWorkDate" label="Başlangıç Tarihi" sortable>
           {{ props.row.startWorkDate !== null ? new Date(props.row.startWorkDate).toLocaleDateString('tr-TR') : '-' }}
         </b-table-column>
