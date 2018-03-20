@@ -6,9 +6,9 @@
     <div v-if="showDocument" class="form-wrapper" title="Evrak Ekle" style="margin-bottom:30px">
       <b-field label="Evrak Ara">
         <b-autocomplete
+          v-model="searchStr"
           :data="documentDetail.documentsList"
           :keep-first="true"
-          v-model="searchStr"
           placeholder="Evrak Ara"
           icon="magnify"
           field="document.name"
@@ -78,7 +78,7 @@ export default {
   computed: {
     ...mapState(['ui', 'documentDetail', 'widgetForm', 'shared'])
   },
-  mounted() {
+  beforeMount() {
     this.$store.dispatch('shared/getDocumentStatus')
   },
   methods: {

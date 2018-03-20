@@ -1,6 +1,7 @@
 const ui = {
   namespaced: true,
   state: {
+    isMenu: false,
     menu: [
       {
         id: 1,
@@ -54,9 +55,9 @@ const ui = {
       isHoverable: true,
       isStriped: true,
       isLoading: true
-    }
+    },
+    loading: true
   },
-  mutations: {},
 
   getters: {
     menu(state) {

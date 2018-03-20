@@ -23,7 +23,8 @@ html {
 }
 
 .navbar {
-  background-color: #2b3643;
+  background: linear-gradient(to right, rgba(95, 40, 95, 1) 0%, rgba(109, 43, 84, 1) 12%, rgba(134, 47, 65, 1) 20%, rgba(154, 52, 51, 1) 28%, rgba(162, 66, 49, 1) 35%, rgba(185, 103, 46, 1) 42%, rgba(194, 130, 44, 1) 49%, rgba(179, 129, 45, 1) 55%, rgba(151, 134, 80, 1) 60%, rgba(118, 123, 50, 1) 66%, rgba(43, 116, 56, 1) 73%, rgba(35, 114, 61, 1) 82%, rgba(13, 101, 110, 1) 90%, rgba(0, 93, 140, 1) 100%);
+  // background-color: #2b3643;
   min-height: 38px;
   position: fixed;
   top: 0;

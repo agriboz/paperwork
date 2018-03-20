@@ -14,7 +14,7 @@
         </download-excel>
       </div>
       <div class="control">
-        <a class="button is-info" @click.prevent="makeSearch">Arama Yap</a>
+        <a class="button is-info" @click.prevent="makeSearch(widgetForm.item)">Arama Yap</a>
       </div>
     </div>
     <div class="is-clearfix"/>
@@ -57,11 +57,15 @@
         </download-excel>
       </div>
       <div class="control">
-        <a class="button is-info" @click.prevent="makeSearch" >Arama Yap</a>
+        <a class="button is-info" @click.prevent="makeSearch(widgetForm.item)" >Arama Yap</a>
       </div>
     </div>
     <div class="is-clearfix"/>
     <document-search-result v-if="$store.state.search.data.length" />
+    <b-message v-if="!$store.state.search.data.length" type="is-info" has-icon>
+      Arama kriterine uygun sonuç bulunamadı.
+    </b-message>
+
   </section>
 
 </template>
@@ -96,13 +100,8 @@ export default {
     ...mapState(['widgetForm'])
   },
 
-  beforeMount() {
-    const state = JSON.parse(localStorage.getItem('state'))
-    this.resetState(state.widgetForm.item)
-  },
-
-  mounted() {
-    this.makeSearch().then(() => {
+  created() {
+    this.makeSearch(this.widgetForm.item).then(() => {
       const searchWrapper = document.getElementById('document-search-result')
       searchWrapper.scrollIntoView({
         behavior: 'smooth'

@@ -14,21 +14,27 @@ module.exports = {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext'
+        href:
+          'https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext'
       },
       {
         rel: 'stylesheet',
-        href: '//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css'
+        href:
+          '//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css'
       }
     ]
   },
 
-  plugins: ['~/plugins/buefy', '~/plugins/vuelidate', '~/plugins/axios', '~/plugins/excel', '~/plugins/maskedInput'],
+  plugins: [
+    '~/plugins/buefy',
+    '~/plugins/vuelidate',
+    '~/plugins/axios',
+    '~/plugins/excel',
+    '~/plugins/maskedInput'
+  ],
 
   css: ['~/assets/style.scss'],
-  modules: [
-    '@nuxtjs/axios'
-  ],
+  modules: ['@nuxtjs/axios'],
   axios: {
     baseURL: 'http://10.10.27.36:8181/DTR/v1/',
     credentials: true
@@ -39,12 +45,11 @@ module.exports = {
   /*
   ** Customize the progress bar color
   */
-  loading: { color: '#3B8070' },
+  loading: { color: '#3B8070', height: '5px' },
   loadingIndicator: {
     name: 'pulse',
     background: '#f5f5f5',
     color: '#2b3643'
-
   },
   /*
   ** Build configuration
@@ -53,7 +58,7 @@ module.exports = {
     /*
     ** Run ESLint on save
     */
-    extend (config, { isDev, isClient }) {
+    extend(config, { isDev, isClient }) {
       if (isDev && isClient) {
         config.module.rules.push({
           enforce: 'pre',

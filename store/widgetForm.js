@@ -3,7 +3,10 @@ const widgetForm = {
   state: {
     item: {
       documentDetails: [],
-      ebaStatus: null,
+      ebaStatus: {
+        id: 1,
+        name: 'Taslak Olarak Kayıtlı'
+      },
       enrollment: {
         isBuddyAssigned: false,
         isSurveySent: false,
@@ -177,9 +180,9 @@ const widgetForm = {
       await this.$axios.post(`document/employee/startdocumentation`, payload)
     },
 
-    async deleteDocument({ rootState }) {
+    /* async deleteDocument({ rootState }) {
       const id = rootState.widgetForm.editItem.id
-      const { status, data } = await this.$axios.delete(
+      const { status, data, statusText } = await this.$axios.delete(
         `document/employee/${id}`
       )
       status === 200 && data
@@ -188,11 +191,11 @@ const widgetForm = {
             type: 'is-warning',
             message: statusText
           })
-    },
+    }, */
 
     async cancelDocument({ rootState }) {
       const id = rootState.widgetForm.editItem.id
-      const { status, data } = await this.$axios.delete(
+      const { status, data, statusText } = await this.$axios.delete(
         `document/employee/${id}`
       )
       status === 200 && data

@@ -1,7 +1,5 @@
 import Vuex from 'vuex'
 
-import state from './state'
-
 import ui from './ui'
 import shared from './shared'
 import search from './search'
@@ -20,8 +18,7 @@ const createStore = () => {
       documentDetail,
       documentHistory,
       tasks
-    },
-    state
+    }
   })
 }
 

@@ -1,7 +1,6 @@
 <template>
   <div class="columns">
     <div class="column">
-      {{ item.ebaStatus }}
       <b-field label="Durum">
         <b-select v-model="item.ebaStatus" placeholder="Seçiniz...">
           <option v-for="e in shared.ebaStatus" :key="e.id" :value="e">

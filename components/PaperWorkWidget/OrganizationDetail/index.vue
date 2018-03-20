@@ -265,25 +265,35 @@ export default {
       }
     }
   },
-  async mounted() {
-    await this.getOrganizations()
-    await this.getBuddyTypes()
+  beforeMount() {
+    const editing = (item, fn) => (item ? fn(item) : [])
+
+    this.getOrganizations()
+    this.getBuddyTypes()
     // fix this
+
     if (this.hideBuddyPage) {
       const organizationId = this.item.enrollment.organization.id
-      await this.getCompanies(organizationId)
-      await this.getHrBusinessPartnerEmployees(organizationId)
+      editing(organizationId, this.getCompanies)
+      editing(organizationId, this.getHrBusinessPartnerEmployees)
     }
 
     if (this.edit) {
       const organizationId = this.item.enrollment.organization.id
       const companyId = this.item.enrollment.company.id
 
-      await this.getCompanies(organizationId)
-      await this.getCategories(organizationId)
-      await this.getHrBusinessPartnerEmployees(organizationId)
-      await this.getWorkLocations(companyId)
-      await this.getBuddyEmployees(companyId)
+      editing(organizationId, this.getCompanies)
+      editing(organizationId, this.getCategories)
+      editing(organizationId, this.getHrBusinessPartnerEmployees)
+      editing(companyId, this.getWorkLocations)
+      editing(companyId, this.getBuddyEmployees)
+      /* organizationId ? await this.getCompanies(organizationId) : []
+      organizationId ? await this.getCategories(organizationId) : []
+      organizationId
+        ? await this.getHrBusinessPartnerEmployees(organizationId)
+        : []
+      companyId ? await this.getWorkLocations(companyId) : []
+      companyId ? await this.getBuddyEmployees(companyId) : [] */
     }
   },
   methods: {

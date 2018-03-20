@@ -9,8 +9,11 @@ const search = {
     }
   },
   actions: {
-    async makeSearch({ commit, rootState }) {
-      const searchData = rootState.widgetForm.item
+    async makeSearch({ commit }, payload) {
+      const searchData = {
+        ...payload.enrollment,
+        ...payload
+      }
       const { data } = await this.$axios.post(
         `document/employee/search`,
         searchData

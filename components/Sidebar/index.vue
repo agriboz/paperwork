@@ -36,10 +36,11 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   computed: {
+    ...mapState(['ui']),
     ...mapGetters({
       menu: 'ui/menu',
       employee: 'shared/isEmployee'
@@ -52,6 +53,7 @@ export default {
 </script>
 <style scoped>
 .sidebar {
+  top: 1rem;
   width: 210px;
   margin-left: -20px;
   z-index: 1;
@@ -59,6 +61,14 @@ export default {
 }
 .sidebar:hover {
   box-shadow: 4px 4px 20px hsla(0, 0%, 7%, 0.1), 0 0 0 1px hsla(0, 0%, 7%, 0.1);
+}
+
+.hide-sidebar {
+  position: fixed;
+  width: 0;
+  margin-top: 1rem;
+  margin-left: -20px;
+  transition: all 0.5s linear;
 }
 
 .menu-link {

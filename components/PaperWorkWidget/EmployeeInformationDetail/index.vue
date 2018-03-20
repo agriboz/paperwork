@@ -12,7 +12,7 @@
           </option>
         </b-select>
       </b-field>
-
+      {{ item.enrollment.startWorkDate }}
       <b-field :type="$v.item.enrollment.startWorkDate.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.startWorkDate.$error ? 'Zorunlu alan': ''"
                label="İşe Başlangıç Tarihi">

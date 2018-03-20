@@ -13,8 +13,7 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.0.0-rc.1",
-    "animate.css": "^3.5.2",
+    "@nuxtjs/axios": "^5.1.1",
     "awesome-mask": "^1.1.1",
     "buefy": "^0.6.2",
     "moment": "^2.20.1",
