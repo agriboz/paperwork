@@ -147,10 +147,6 @@ export default {
   },
   beforeMount() {
     this.getChannels()
-    if (!this.edit) {
-      console.log(this.$v)
-      this.$v.$reset()
-    }
   },
   methods: {
     ...mapActions({
