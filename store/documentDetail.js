@@ -24,7 +24,6 @@ const documentDetail = {
       const response = await this.$axios.get(
         `document/employee/detail/${id}/mandatoryDocumentsReceived`
       )
-      console.log(response.data)
       return response.status === 200
         ? commit('setMandatoryDocuments', response.data)
         : null

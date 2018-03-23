@@ -18,8 +18,9 @@
         </b-autocomplete>
       </b-field>
     </div>
+    <!-- edit ? widgetForm.editItem.documentDetails : widgetForm.item.documentDetails" -->
     <b-table
-      :data="edit ? widgetForm.editItem.documentDetails : widgetForm.item.documentDetails"
+      :data="widgetForm.item.documentDetails"
       :paginated="ui.tableOpts.isPaginated"
       :per-page="ui.tableOpts.perPage"
       :pagination-simple="ui.tableOpts.isPaginationSimple"
@@ -36,16 +37,19 @@
         <b-table-column field="sendRemindingEmail" label="Hatırlatma E-Postası Gönderilsin mi?" sortable>
           {{ props.row.sendRemindingEmail ? 'Evet' : 'Hayır' }}
         </b-table-column>
-        <b-table-column field="documentStatus" label="Durum" sortable>
+        <b-table-column field="documentStatus" label="Durum">
           <b-field>
             <b-select v-model="props.row.documentStatus"
-                      :disabled="notEditable || !edit"
+                      :selected="props.row.documentStatus = shared.documentStatus[0]"
                       placeholder="Seçiniz..."
-                      @change.native="changeDocumentStatus(props.row.document.id, props.row.documentStatus)">
-              <option v-for="d in shared.documentStatus" :key="d.in" :value="d">
+                      @input="deneme(props.row, props.index)">
+
+              <option v-for="d in shared.documentStatus" :key="d.id" :value="d">
                 {{ d.name }}
               </option>
             </b-select>
+            <!-- :disabled="notEditable || !edit" -->
+            <!-- @change.native="changeDocumentStatus(props.row.document.id, props.row.documentStatus) -->
           </b-field>
         </b-table-column>
       </template>
@@ -82,6 +86,11 @@ export default {
     this.$store.dispatch('shared/getDocumentStatus')
   },
   methods: {
+    deneme(data, index) {
+      const payload = { data, index }
+      console.log(payload.data.documentStatus.name)
+      this.$store.commit('widgetForm/updateDocumentsList', payload)
+    },
     selectDocument: debounce(function(option) {
       const editedCollection = this.widgetForm.editItem.documentDetails
       const newCollection = this.widgetForm.item.documentDetails
@@ -136,3 +145,10 @@ export default {
   }
 }
 </script>
+<style>
+.has-text-right,
+.b-table .table th .th-wrap.is-numeric {
+  text-align: left !important;
+  flex-direction: unset;
+}
+</style>

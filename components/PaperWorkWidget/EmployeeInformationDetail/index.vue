@@ -12,7 +12,7 @@
           </option>
         </b-select>
       </b-field>
-      {{ item.enrollment.startWorkDate }}
+
       <b-field :type="$v.item.enrollment.startWorkDate.$error ? 'is-danger' : ''"
                :message="$v.item.enrollment.startWorkDate.$error ? 'Zorunlu alan': ''"
                label="İşe Başlangıç Tarihi">
@@ -24,20 +24,23 @@
       </b-field>
 
       <div class="field">
-        <b-switch v-model="item.enrollment.isSurveySent" @input="checkModelStatus">
+        <b-switch v-model="item.enrollment.isSurveySent" @input="checkModelStatus(); getSurveyorEmployees()">
           Anket Gönderildi
         </b-switch>
       </div>
+      <b-message v-if="(!search && item.enrollment.isSurveySent)" type="is-info">
+        Anket Gönderilen Yönetici seçmek için bir sonraki adımdan <strong>Organizasyon</strong> seçmelisiniz.
+      </b-message>
       <b-field v-if="!search && item.enrollment.isSurveySent"
-               :type="$v.item.enrollment.channel.$error ? 'is-danger' : ''"
-               :message="$v.item.enrollment.channel.$error ? 'Zorunlu alan': ''"
+               :type="$v.item.enrollment.surveyorEmployee.$error ? 'is-danger' : ''"
+               :message="$v.item.enrollment.surveyorEmployee.$error ? 'Zorunlu alan': ''"
                label="Anket Gönderilen Yönetici">
-        <b-select v-model="item.enrollment.channel"
+        <b-select v-model="item.enrollment.surveyorEmployee"
                   placeholder="Seçiniz..."
                   expanded
-                  @input="$v.item.enrollment.channel.$touch()">
-          <option>
-            Sms
+                  @input="$v.item.enrollment.surveyorEmployee.$touch()">
+          <option v-for="r in shared.surveyorEmployees" :key="r.id" :value="r">
+            {{ r.name }}
           </option>
         </b-select>
       </b-field>
@@ -244,6 +247,11 @@ export default {
             return vueInstance.isSurveySent
           })
         },
+        surveyorEmployee: {
+          requiredIf: requiredIf(vueInstance => {
+            return vueInstance.isSurveySent
+          })
+        },
         welcomeKitType: {
           requiredIf: requiredIf(vueInstance => {
             return vueInstance.isSendWelcomeKit
@@ -331,7 +339,8 @@ export default {
   methods: {
     ...mapActions({
       getReqruitmentEmployees: 'shared/getReqruitmentEmployees',
-      getWelcomeKitTypes: 'shared/getWelcomeKitTypes'
+      getWelcomeKitTypes: 'shared/getWelcomeKitTypes',
+      getSurveyorEmployees: 'shared/getSurveyorEmployees'
     }),
 
     checkModelStatus() {

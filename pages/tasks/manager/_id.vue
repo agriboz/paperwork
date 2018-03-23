@@ -75,7 +75,10 @@ export default {
   },
   async beforeMount() {
     await this.getBuddyEmployees(this.tasks.item.enrollment.company.id)
-    await this.getBuddy(this.tasks.item.enrollment.buddyEmployee.id)
+    console.log(this.tasks.item.enrollment.buddyEmployee)
+    if (this.tasks.item.enrollment.buddyEmployee.id !== null) {
+      await this.getBuddy(this.tasks.item.enrollment.buddyEmployee.id)
+    }
   },
   methods: {
     ...mapActions({

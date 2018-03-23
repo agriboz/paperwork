@@ -2,6 +2,7 @@ module.exports = {
   /*
   ** Headers of the page
   */
+  debug: true,
   mode: 'spa',
   head: {
     title: 'Evrak Takip',
@@ -30,11 +31,18 @@ module.exports = {
     '~/plugins/vuelidate',
     '~/plugins/axios',
     '~/plugins/excel',
-    '~/plugins/maskedInput'
+    '~/plugins/maskedInput',
+    {
+      src: '~/plugins/nuxtClientInit',
+      ssr: false
+    }
   ],
 
   css: ['~/assets/style.scss'],
   modules: ['@nuxtjs/axios'],
+  env: {
+    baseURL: 'http://10.10.27.36:8181/DTR/v1/',
+  },
   axios: {
     baseURL: 'http://10.10.27.36:8181/DTR/v1/',
     credentials: true
@@ -50,6 +58,9 @@ module.exports = {
     name: 'pulse',
     background: '#f5f5f5',
     color: '#2b3643'
+  },
+  generate: {
+    routes: ['500']
   },
   /*
   ** Build configuration

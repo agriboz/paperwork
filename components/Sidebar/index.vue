@@ -5,6 +5,7 @@
         <img v-if="employee.image" :src="`data:image/png;base64, ${employee.image}`" class="employee-image">
         <b-icon v-else icon="account-circle" size="is-large"/>
       </div>
+
       <div class="userName">
         {{ employee.name }} {{ employee.surname }}
       </div>
@@ -40,14 +41,10 @@ import { mapGetters, mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState(['ui']),
+    ...mapState(['ui', 'employee']),
     ...mapGetters({
-      menu: 'ui/menu',
-      employee: 'shared/isEmployee'
+      menu: 'ui/menu'
     })
-  },
-  beforeMount() {
-    this.$store.dispatch('shared/getEmployee')
   }
 }
 </script>

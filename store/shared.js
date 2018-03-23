@@ -1,7 +1,6 @@
 const shared = {
   namespaced: true,
   state: {
-    employee: {},
     organizations: [],
     companies: [],
     workLocations: [],
@@ -15,12 +14,10 @@ const shared = {
     welcomeKitTypes: [],
     buddyTypes: [],
     buddyEmployees: [],
-    ebaStatus: []
+    ebaStatus: [],
+    surveyorEmployees: []
   },
   mutations: {
-    setEmployee(state, payload) {
-      state.employee = payload
-    },
     setOrganizations(state, payload) {
       state.organizations = payload
     },
@@ -62,22 +59,13 @@ const shared = {
     },
     setEbaStatus(state, payload) {
       state.ebaStatus = payload
-    }
-  },
-
-  getters: {
-    isEmployee(state) {
-      return state.employee
+    },
+    setSurveyorEmployees(state, payload) {
+      state.surveyorEmployees = payload
     }
   },
 
   actions: {
-    async getEmployee({ commit }) {
-      const { data } = await this.$axios.get(`employee`)
-
-      return data ? commit('setEmployee', data) : null
-    },
-
     async getEbaStatus({ commit }) {
       const { data } = await this.$axios.get(`document/eba/status`)
 
@@ -88,6 +76,19 @@ const shared = {
       const { data } = await this.$axios.get(`organization`)
 
       return data ? commit('setOrganizations', data) : null
+    },
+
+    async getSurveyorEmployees({ commit, rootState }) {
+      const id =
+        rootState.widgetForm.editItem.enrollment.organization.id ||
+        rootState.widgetForm.item.enrollment.organization.id
+
+      const { data } = await this.$axios.post(`organization/managers`, {
+        id,
+        name: ''
+      })
+
+      return data ? commit('setSurveyorEmployees', data) : null
     },
 
     async getCompanies({ commit }, payload) {

@@ -87,8 +87,6 @@ export default function({ $axios, store }) {
           message: error.response.data.error
         })
       }
-      store.state.ui.loading = false
-
       return Promise.reject(error)
     }
   )

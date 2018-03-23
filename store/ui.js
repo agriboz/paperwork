@@ -1,7 +1,6 @@
 const ui = {
   namespaced: true,
   state: {
-    isMenu: false,
     menu: [
       {
         id: 1,

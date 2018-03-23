@@ -32,6 +32,19 @@ const widgetForm = {
     isThirdTabInValid: true
   },
   mutations: {
+    updateDocumentsList(state, payload) {
+      console.log(payload.index)
+      // Replace item at index using native splice
+      state.item.documentDetails = state.item.documentDetails.map(
+        (item, index) => {
+          if (
+            item.organizationDocumentId === payload.data.organizationDocumentId
+          ) {
+            item[index] = Object.assign({}, payload.data)
+          }
+        }
+      )
+    },
     item(state, payload) {
       Object.assign(state.item, payload)
     },
@@ -113,14 +126,14 @@ const widgetForm = {
             id: 1
           },
           entryUser: {
-            id: rootState.shared.employee.id
+            id: rootState.employee.id
           }
         }
       }
 
       const sendDraftData = Object.assign({}, getState, {
         entryUser: {
-          id: rootState.shared.employee.id
+          id: rootState.employee.id
         },
         documentGroup: {
           id: 1
@@ -150,7 +163,7 @@ const widgetForm = {
             id: 1
           },
           entryUser: {
-            id: rootState.shared.employee.id
+            id: rootState.employee.id
           }
         }
       }
@@ -160,7 +173,7 @@ const widgetForm = {
           id: payload.enrollment.organization.id
         },
         entryUser: {
-          id: rootState.shared.employee.id
+          id: rootState.employee.id
         },
         documentGroup: {
           id: 1

@@ -40,7 +40,7 @@
     </div>
     <div class="columns">
       <div class="column">
-        <div class="form-wrapper" title="Personel Detay Bilgileri">
+        <div class="form-wrapper" title="Talep Detay Bilgileri">
           <incident-information :item="widgetForm.item" />
         </div>
       </div>
@@ -100,7 +100,7 @@ export default {
     ...mapState(['widgetForm'])
   },
 
-  created() {
+  beforeMount() {
     this.makeSearch(this.widgetForm.item).then(() => {
       const searchWrapper = document.getElementById('document-search-result')
       searchWrapper.scrollIntoView({

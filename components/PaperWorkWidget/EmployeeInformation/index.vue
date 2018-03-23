@@ -30,8 +30,8 @@
                maxlength="50"
                @input="$v.item.enrollment.email.$touch()" />
     </b-field>
-    <b-field v-if="!search && !hideBuddyPage"
-             :type="$v.item.enrollment.gsmTel.$error ? 'is-danger' : ''"
+    <!-- v-if="!search && !hideBuddyPage" -->
+    <b-field :type="$v.item.enrollment.gsmTel.$error ? 'is-danger' : ''"
              :message="$v.item.enrollment.gsmTel.$error ? 'Zorunlu alan': ''"
              label="Cep Telefonu" />
     <the-mask v-model="item.enrollment.gsmTel"
@@ -147,6 +147,10 @@ export default {
   },
   beforeMount() {
     this.getChannels()
+    if (!this.edit) {
+      console.log(this.$v)
+      this.$v.$reset()
+    }
   },
   methods: {
     ...mapActions({
