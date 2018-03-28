@@ -10,6 +10,8 @@ const documentDetail = {
     },
     setDocumentsList(state, payload) {
       state.documentsList = payload
+      // todo: fix this state 1 = new document
+      state.documentsList[0].documentState = 1
     }
   },
   getters: {},

@@ -1,6 +1,7 @@
 <template>
   <section>
-    <b-tabs v-model="activeTab" @change="tabChanged">
+
+    <b-tabs v-model="activeTab" @change="tabChanged" @input="checkIfDocumentAlreadyAdded">
       <b-tab-item label="Personel Bilgileri" icon="account-box">
         <employee-information
           :item="item"
@@ -20,12 +21,13 @@
       </b-tab-item>
     </b-tabs>
     <div class="field is-grouped">
+      <!-- :disabled="canStartEmployment" -->
 
-      <p v-if="!widgetForm.editItem.flowId" class="control">
-        <button :disabled="canStartEmployment"
+      <!-- <p v-if="!widgetForm.editItem.flowId" class="control">
+        <button type="submit"
                 class="button is-primary"
                 @click="startEmployment(item)">Personel Girişini Başlat</button>
-      </p>
+      </p> -->
       <p v-if="edit && widgetForm.editItem.flowId && !documentDetail.mandatoryDocuments" class="control">
         <button class="button is-warning"
                 @click="startBPProcess">BP Bilgilendirme Gönder</button>
@@ -34,11 +36,11 @@
         <button class="button is-success"
                 @click="sendToDocumentationTeam(item)">Dökümantasyon Ekibine Gönder</button>
       </p>
-      <p v-if="!widgetForm.editItem.flowId" class="control">
+      <!-- <p v-if="!widgetForm.editItem.flowId" class="control">
         <button :disabled="!isDraft"
                 class="button is-info"
                 @click="saveAsDraft">Taslak Olarak Kaydet</button>
-      </p>
+      </p> -->
 
       <p v-if="edit && canCancel" class="control">
         <button class="button" @click="cancelDocument">Süreci İptal Et</button>
@@ -49,8 +51,13 @@
                 @click="deleteDocument">Sil</button>
       </p>
     </div>
+
     <b-modal :active.sync="isDocumentationModal.open">
       <documentation-team :item="isDocumentationModal.data"/>
+    </b-modal>
+
+    <b-modal :active.sync="isComponentModalActive" has-modal-card>
+      <document-already-defined />
     </b-modal>
   </section>
 </template>
@@ -62,6 +69,7 @@ import EmployeeInformationDetail from './EmployeeInformationDetail'
 import OrganizationDetail from './OrganizationDetail'
 import DocumentDetail from './DocumentDetail'
 import DocumentationTeam from '../DocumentationTeam'
+import DocumentAlreadyDefined from '../DocumentAlreadyDefined'
 
 export default {
   components: {
@@ -69,26 +77,14 @@ export default {
     EmployeeInformationDetail,
     OrganizationDetail,
     DocumentDetail,
-    DocumentationTeam
+    DocumentationTeam,
+    DocumentAlreadyDefined
   },
-  props: {
-    edit: {
-      type: Boolean,
-      default: false
-    },
-    search: {
-      type: Boolean,
-      default: false
-    },
-    item: {
-      type: Object,
-      default: null
-    }
-  },
-  // props: ['edit', 'search', 'item'],
+  props: ['edit', 'search', 'item'],
   data() {
     return {
       activeTab: 0,
+      isComponentModalActive: false,
       isDocumentationModal: {
         open: false,
         data: this.item
@@ -121,33 +117,21 @@ export default {
         this.widgetForm.isSecondTabInValid ||
         this.widgetForm.isThirdTabInValid
       )
-    },
-
-    isDraft() {
-      if (this.edit) {
-        const isDraftEdit =
-          !!this.widgetForm.editItem.enrollment.firstname &&
-          !!this.widgetForm.editItem.enrollment.lastname &&
-          !!this.widgetForm.editItem.enrollment.identityNumber
-
-        return isDraftEdit
-      }
-      const isDraftNew =
-        !!this.widgetForm.item.enrollment.firstname &&
-        !!this.widgetForm.item.enrollment.lastname &&
-        !!this.widgetForm.item.enrollment.identityNumber
-
-      return isDraftNew
     }
   },
-
   methods: {
     ...mapActions({
-      startEmployment: 'widgetForm/startEmployment',
       startBPProcess: 'widgetForm/startBPProcess',
       deleteDocument: 'widgetForm/deleteDocument',
       cancelDocument: 'widgetForm/cancelDocument'
     }),
+
+    /* startEmployment(payload) {
+      this.$v.item.enrollment.$touch()
+      if (!this.$v.$invalid) {
+        this.$store.dispatch('widgetForm/startEmployment', payload)
+      }
+    }, */
 
     sendToDocumentationTeam() {
       this.documentDetail.mandatoryDocuments
@@ -159,10 +143,35 @@ export default {
       this.$store.dispatch('widgetForm/deleteDocument')
     },
 
-    saveAsDraft() {
+    /* saveAsDraft() {
       return this.edit
         ? this.$store.dispatch('widgetForm/updateAsDraft')
         : this.$store.dispatch('widgetForm/saveAsDraft')
+    }, */
+
+    checkIfDocumentAlreadyAdded() {
+      const documentDetails = this.widgetForm.item.documentDetails
+      const documentDetailsEdit = this.widgetForm.editItem.documentDetails
+      const selectedDocument = this.documentDetail.documentsList[0]
+      if (selectedDocument) {
+        var checkIfDocumentExist = documentDetails.find(
+          item => item.document.name === selectedDocument.document.name
+        )
+      }
+
+      if (selectedDocument) {
+        var checkIfDocumentExistEdit = documentDetailsEdit.find(
+          item => item.document.name === selectedDocument.document.name
+        )
+      }
+
+      if (this.activeTab === 2 && checkIfDocumentExist) {
+        this.isComponentModalActive = true
+      }
+
+      if (this.activeTab === 2 && checkIfDocumentExistEdit) {
+        this.isComponentModalActive = true
+      }
     },
 
     tabChanged() {

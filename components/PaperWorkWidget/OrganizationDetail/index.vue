@@ -1,176 +1,172 @@
 <template>
-  <div class="columns">
-    <div class="column">
+  <div>
+    <div class="columns">
+      <div class="column">
 
-      <b-field :type="$v.item.enrollment.organization.$error ? 'is-danger' : ''"
-               :message="$v.item.enrollment.organization.$error ? 'Zorunlu alan': ''"
-               label="Organizasyon">
-        <b-select v-model="item.enrollment.organization"
-                  :disabled="notEditable"
-                  placeholder="Seçiniz..."
-                  expanded
-                  @input="setCompanies(); $v.item.enrollment.organization.$touch()">
-          <option v-for="o in shared.organizations" :key="o.id" :value="o">
-            {{ o.name }}
-          </option>
-        </b-select>
-      </b-field>
-
-      <b-field :type="$v.item.enrollment.company.$error ? 'is-danger' : ''"
-               :message="$v.item.enrollment.company.$error ? 'Zorunlu alan': ''"
-               label="Şirket">
-        <b-select v-model="item.enrollment.company"
-                  :disabled="!item.enrollment.organization || hideBuddyPage"
-                  expanded
-                  placeholder="Seçiniz..."
-                  @input="setWorkLocations(); $v.item.enrollment.company.$touch()">
-          <option v-for="c in shared.companies" :key="c.id" :value="c">
-            {{ c.name }}
-          </option>
-        </b-select>
-      </b-field>
-      <b-field v-if="!search"
-               :type="$v.item.enrollment.department.$error ? 'is-danger' : ''"
-               :message="$v.item.enrollment.department.$error ? 'Zorunlu alan': ''"
-               label="Departman">
-        <b-input v-model="item.enrollment.department"
-                 :disabled="notEditable"
-                 @input="$v.item.enrollment.department.$touch()"/>
-      </b-field>
-      <b-field v-if="!search"
-               :type="$v.item.enrollment.position.$error ? 'is-danger' : ''"
-               :message="$v.item.enrollment.position.$error ? 'Zorunlu alan': ''"
-               label="Pozisyon">
-        <b-input v-model="item.enrollment.position"
-                 :disabled="notEditable"
-                 @input="$v.item.enrollment.position.$touch()"/>
-      </b-field>
-      <b-field v-if="!hideBuddyPage"
-               :type="$v.item.enrollment.workLocation.$error ? 'is-danger' : ''"
-               :message="$v.item.enrollment.workLocation.$error ? 'Zorunlu alan': ''"
-               label="Çalışma Lokasyonu" has-addons/>
-      <div v-if="!hideBuddyPage" class="field is-grouped">
-        <p class="control" style="width:80%">
-          <b-select v-model="item.enrollment.workLocation"
-                    :disabled="!item.enrollment.company"
+        <b-field :type="$v.item.enrollment.organization.$error ? 'is-danger' : ''"
+                 :message="$v.item.enrollment.organization.$error ? 'Zorunlu alan': ''"
+                 label="Organizasyon">
+          <b-select v-model="item.enrollment.organization"
+                    :disabled="notEditable"
                     placeholder="Seçiniz..."
                     expanded
-                    @input="$v.item.enrollment.workLocation.$touch()">
-            <option v-for="w in shared.workLocations" :key="w.id" :value="w">
-              {{ w.name }}
+                    @input="setCompanies()">
+            <option v-for="o in shared.organizations" :key="o.id" :value="o">
+              {{ o.name }}
             </option>
           </b-select>
-        </p>
-        <p class="control">
-          <b-switch @input="sgkLocation = !sgkLocation"/>
-        </p>
+        </b-field>
 
-        <p class="control">
-          <b-tooltip label="Kullanıcıyı yönlendiren msg gelecek">
-            <b-icon
-              icon="information"/>
-          </b-tooltip>
-        </p>
+        <b-field :type="$v.item.enrollment.company.$error ? 'is-danger' : ''"
+                 :message="$v.item.enrollment.company.$error ? 'Zorunlu alan': ''"
+                 label="Şirket">
+          <b-select v-model="item.enrollment.company"
+                    :disabled="!item.enrollment.organization || hideBuddyPage"
+                    expanded
+                    placeholder="Seçiniz..."
+                    @input="setWorkLocations()">
+            <option v-for="c in shared.companies" :key="c.id" :value="c">
+              {{ c.name }}
+            </option>
+          </b-select>
+        </b-field>
+        <b-field v-if="!search"
+                 :type="$v.item.enrollment.department.$error ? 'is-danger' : ''"
+                 :message="$v.item.enrollment.department.$error ? 'Zorunlu alan': ''"
+                 label="Departman">
+          <b-input v-model="item.enrollment.department"
+                   :disabled="notEditable"/>
+        </b-field>
+        <b-field v-if="!search"
+                 :type="$v.item.enrollment.position.$error ? 'is-danger' : ''"
+                 :message="$v.item.enrollment.position.$error ? 'Zorunlu alan': ''"
+                 label="Pozisyon">
+          <b-input v-model="item.enrollment.position"
+                   :disabled="notEditable"/>
+        </b-field>
+        <b-field v-if="!hideBuddyPage"
+                 :type="$v.item.enrollment.workLocation.$error ? 'is-danger' : ''"
+                 :message="$v.item.enrollment.workLocation.$error ? 'Zorunlu alan': ''"
+                 label="Çalışma Lokasyonu" has-addons/>
+        <div v-if="!hideBuddyPage" class="field is-grouped">
+          <p class="control" style="width:80%">
+            <b-select v-model="item.enrollment.workLocation"
+                      :disabled="!item.enrollment.company"
+                      placeholder="Seçiniz..."
+                      expanded>
+              <option v-for="w in shared.workLocations" :key="w.id" :value="w">
+                {{ w.name }}
+              </option>
+            </b-select>
+          </p>
+          <p v-if="!search" class="control">
+            <b-switch @input="sgkLocation = !sgkLocation"/>
+          </p>
+
+          <p v-if="!search" class="control">
+            <b-tooltip label="Personelin SGK lokasyonu farklı ise checkbox'ı seçmeniz gerekmektedir">
+              <b-icon
+                icon="information"/>
+            </b-tooltip>
+          </p>
+        </div>
+
+        <b-field v-if="!hideBuddyPage && !sgkLocation"
+                 :type="$v.item.enrollment.sgkLocation.$error ? 'is-danger' : ''"
+                 :message="$v.item.enrollment.sgkLocation.$error ? 'Zorunlu alan': ''"
+                 label="SGK Lokasyonu">
+          <b-select v-model="item.enrollment.sgkLocation"
+                    :disabled="!item.enrollment.company"
+                    placeholder="Seçiniz..."
+                    expanded>
+            <option v-for="s in shared.SGKLocations" :key="s.id" :value="s">
+              {{ s.name }}
+            </option>
+          </b-select>
+        </b-field>
+        <b-field v-if="!hideBuddyPage"
+                 label="Kategori">
+          <b-select v-model="item.enrollment.organizationDocumentCategory"
+                    :disabled="!item.enrollment.organization"
+                    placeholder="Seçiniz..."
+                    expanded>
+            <option v-for="c in shared.categories" :key="c.id" :value="c">
+              {{ c.name }}
+            </option>
+          </b-select>
+        </b-field>
+
+        <b-field :type="$v.item.enrollment.hrBusinessPartnerEmployee.$error ? 'is-danger' : ''"
+                 :message="$v.item.enrollment.hrBusinessPartnerEmployee.$error ? 'Zorunlu alan': ''"
+                 label="İKİO">
+          <b-select v-model="item.enrollment.hrBusinessPartnerEmployee"
+                    :disabled="!item.enrollment.company || hideBuddyPage"
+                    expanded
+                    placeholder="Seçiniz...">
+            <option v-for="h in shared.hrBusinessPartnerEmployees" :key="h.id" :value="h">
+              {{ h.name }}
+            </option>
+          </b-select>
+        </b-field>
+
+        <b-field v-if="hideBuddyPage" label="Yönetici">
+          <b-input v-model="item.enrollment.manager.name" disabled/>
+        </b-field>
+
+        <b-field v-if="!edit && !hideBuddyPage"
+                 :type="$v.item.enrollment.manager.name.$error ? 'is-danger' : ''"
+                 :message="$v.item.enrollment.manager.name.$error ? 'Zorunlu alan': ''"
+                 label="Yönetici" >
+          <b-autocomplete
+            :disabled="!item.enrollment.organization || hideBuddyPage"
+            :data="shared.managers"
+            v-model="item.enrollment.manager.name"
+            placeholder="Yönetici Ara"
+            icon="magnify"
+            field="name"
+            @input="getManagers({id: item.enrollment.organization.id, name: item.enrollment.manager.name})"
+            @select="option => setManager(option)">
+            <template slot="empty">Arama kriterine uygun sonuç bulunamadı.</template>
+          </b-autocomplete>
+        </b-field>
+        <b-field v-if="edit" label="Yönetici">
+          <b-autocomplete
+            :disabled="!item.enrollment.organization"
+            :data="shared.managers"
+            v-model="item.enrollment.manager.name"
+            placeholder="Yönetici Ara"
+            icon="magnify"
+            field="name"
+            @input="getManagers({id: item.enrollment.organization.id, name: item.enrollment.manager.name})"
+            @select="option => setManager(option)">
+            <template slot="empty">Arama kriterine uygun sonuç bulunamadı.</template>
+          </b-autocomplete>
+        </b-field>
       </div>
-
-      <b-field v-if="!hideBuddyPage && sgkLocation"
-               :type="$v.item.enrollment.sgkLocation.$error ? 'is-danger' : ''"
-               :message="$v.item.enrollment.sgkLocation.$error ? 'Zorunlu alan': ''"
-               label="SGK Lokasyonu">
-        <b-select v-model="item.enrollment.sgkLocation"
-                  :disabled="!item.enrollment.company"
-                  placeholder="Seçiniz..."
-                  expanded
-                  @input="$v.item.enrollment.sgkLocation.$touch()">
-          <option v-for="s in shared.SGKLocations" :key="s.id" :value="s">
-            {{ s.name }}
-          </option>
-        </b-select>
-      </b-field>
-      <b-field v-if="!hideBuddyPage"
-               label="Kategori">
-        <b-select v-model="item.enrollment.organizationDocumentCategory"
-                  :disabled="!item.enrollment.organization"
-                  placeholder="Seçiniz..."
-                  expanded>
-          <option v-for="c in shared.categories" :key="c.id" :value="c">
-            {{ c.name }}
-          </option>
-        </b-select>
-      </b-field>
-
-      <b-field :type="$v.item.enrollment.hrBusinessPartnerEmployee.$error ? 'is-danger' : ''"
-               :message="$v.item.enrollment.hrBusinessPartnerEmployee.$error ? 'Zorunlu alan': ''"
-               label="İKİO">
-        <b-select v-model="item.enrollment.hrBusinessPartnerEmployee"
-                  :disabled="!item.enrollment.company || hideBuddyPage"
-                  expanded
-                  placeholder="Seçiniz..."
-                  @input="$v.item.enrollment.hrBusinessPartnerEmployee.$touch()">
-          <option v-for="h in shared.hrBusinessPartnerEmployees" :key="h.id" :value="h">
-            {{ h.name }}
-          </option>
-        </b-select>
-      </b-field>
-
-      <b-field v-if="hideBuddyPage" label="Yönetici">
-        <b-input v-model="item.enrollment.manager.name" disabled/>
-      </b-field>
-
-      <b-field v-if="!edit && !hideBuddyPage"
-               :type="$v.item.enrollment.manager.name.$error ? 'is-danger' : ''"
-               :message="$v.item.enrollment.manager.name.$error ? 'Zorunlu alan': ''"
-               label="Yönetici" >
-        <b-autocomplete
-          :disabled="!item.enrollment.organization || hideBuddyPage"
-          :data="shared.managers"
-          v-model="item.enrollment.manager.name"
-          placeholder="Yönetici Ara"
-          icon="magnify"
-          field="name"
-          @input="getManagers({id: item.enrollment.organization.id, name: item.enrollment.manager.name}); $v.item.enrollment.manager.name.$touch()"
-          @select="option => setManager(option)">
-          <template slot="empty">Arama kriterine uygun sonuç bulunamadı.</template>
-        </b-autocomplete>
-      </b-field>
-
-      <b-field v-if="edit" label="Yönetici">
-        <b-autocomplete
-          :disabled="!item.enrollment.organization"
-          :data="shared.managers"
-          v-model="item.enrollment.manager.name"
-          placeholder="Yönetici Ara"
-          icon="magnify"
-          field="name"
-          @input="getManagers({id: item.enrollment.organization.id, name: item.enrollment.manager.name})"
-          @select="option => setManager(option)">
-          <template slot="empty">Arama kriterine uygun sonuç bulunamadı.</template>
-        </b-autocomplete>
-      </b-field>
-    </div>
-    <div v-if="!search && !hideBuddyPage" class="column">
-      <div class="field is-grouped">
-        <p class="control">
-
-          <b-switch :disabled="!item.enrollment.company || notEditable" v-model="item.enrollment.isBuddyAssigned" @input="getBuddyEmployees(item.enrollment.company.id); checkModelStatus()">
-            Buddy Olacak
-          </b-switch>
-        </p>
-        <p v-if="!item.enrollment.isBuddyAssigned" class="control">
-          <b-tooltip label="Müdür altı veya Müdür üstü seçeneklerinden biri seçilmek zorundadır">
-            <b-icon
-              icon="information"/>
-          </b-tooltip>
-        </p>
-      </div>
+      <div v-if="!search && !hideBuddyPage" class="column">
+        <div class="field is-grouped">
+          <p class="control">
+            <b-tooltip label="Buddy seçebilmek için şirket seçmelisiniz">
+              <b-switch :disabled="!item.enrollment.company || notEditable" v-model="item.enrollment.isBuddyAssigned" @input="getBuddyEmployees(item.enrollment.company.id); checkModelStatus()">
+                Buddy Olacak
+              </b-switch>
+            </b-tooltip>
+          </p>
+          <p v-if="!item.enrollment.isBuddyAssigned" class="control">
+            <b-tooltip label="Müdür altı veya Müdür üstü seçeneklerinden biri seçilmek zorundadır">
+              <b-icon
+                icon="information"/>
+            </b-tooltip>
+          </p>
+        </div>
 
 
 
-      <b-field :type="$v.item.enrollment.buddyType.$error ? 'is-danger' : ''"
-               :message="$v.item.enrollment.buddyType.$error ? 'Zorunlu alan': ''"
-               label="Müdür Üstü ve Müdür Altı">
+        <b-field :type="$v.item.enrollment.buddyType.$error ? 'is-danger' : ''"
+                 :message="$v.item.enrollment.buddyType.$error ? 'Zorunlu alan': ''"
+                 label="Müdür Üstü ve Müdür Altı">
 
-               <!-- <b-select v-model="item.enrollment.buddyType"
+                 <!-- <b-select v-model="item.enrollment.buddyType"
                   :disabled="item.enrollment.isBuddyAssigned || notEditable"
                   placeholder="Seçiniz..."
                   expanded
@@ -179,47 +175,62 @@
             {{ b.name }}
           </option>
         </b-select> -->
-      </b-field>
-      <div v-for="b in shared.buddyTypes" :key="b.id" class="block">
-        <b-radio v-model="item.enrollment.buddyType" :disabled="item.enrollment.isBuddyAssigned || notEditable"
-                 :native-value="b.name">
-          {{ b.name }}
-        </b-radio>
-      </div>
-      <div v-if="item.enrollment.isBuddyAssigned" class="form-wrapper" title="Buddy Bilgileri" style="margin-top:40px">
-        <b-field :type="$v.item.enrollment.buddyEmployee.$error ? 'is-danger' : ''"
-                 :message="$v.item.enrollment.buddyEmployee.$error ? 'Zorunlu alan': ''"
-                 label="Buddy">
-          <b-select v-model="item.enrollment.buddyEmployee"
-                    :disabled="!item.enrollment.isBuddyAssigned"
-                    placeholder="Seçiniz..."
-                    expanded
-                    @input="getBuddy(item.enrollment.buddyEmployee.id); $v.item.enrollment.buddyEmployee.$touch()">
-            <option v-for="b in shared.buddyEmployees" :key="b.id" :value="b">
-              {{ b.name }}
-            </option>
-          </b-select>
         </b-field>
-        <div v-if="tasks.buddyInformation">
-          <b-field label="Sicil Numarası">
-            <b-input :value="tasks.buddyInformation.registry" :disabled="true"/>
+        <div v-for="b in shared.buddyTypes" :key="b.id" class="block">
+          <b-radio v-model="item.enrollment.buddyType" :disabled="item.enrollment.isBuddyAssigned || notEditable"
+                   :native-value="b">
+            {{ b.name }}
+          </b-radio>
+        </div>
+        <div v-if="item.enrollment.isBuddyAssigned && item.enrollment.company" class="form-wrapper" title="Buddy Bilgileri" style="margin-top:40px">
+          <b-field :type="$v.item.enrollment.buddyEmployee.$error ? 'is-danger' : ''"
+                   :message="$v.item.enrollment.buddyEmployee.$error ? 'Zorunlu alan': ''"
+                   label="Buddy">
+            <b-select v-model="item.enrollment.buddyEmployee"
+                      :disabled="!item.enrollment.isBuddyAssigned"
+                      placeholder="Seçiniz..."
+                      expanded
+                      @input="getBuddy(item.enrollment.buddyEmployee.id)">
+              <option v-for="b in shared.buddyEmployees" :key="b.id" :value="b">
+                {{ b.name }}
+              </option>
+            </b-select>
           </b-field>
-          <b-field label="Şirket">
-            <b-input :value="tasks.buddyInformation.company.name" :disabled="true"/>
-          </b-field>
-          <b-field label="Departman">
-            <b-input :value="tasks.buddyInformation.department" :disabled="true"/>
-          </b-field>
-          <b-field label="Lokasyon">
-            <b-input :value="tasks.buddyInformation.location.name" :disabled="true"/>
-          </b-field>
-          <b-field label="Ünvan">
-            <b-input :value="tasks.buddyInformation.name" :disabled="true"/>
-          </b-field>
+          <div v-if="tasks.buddyInformation">
+            <b-field label="Sicil Numarası">
+              <b-input :value="tasks.buddyInformation.registry" :disabled="true"/>
+            </b-field>
+            <b-field label="Şirket">
+              <b-input :value="tasks.buddyInformation.company.name" :disabled="true"/>
+            </b-field>
+            <b-field label="Departman">
+              <b-input :value="tasks.buddyInformation.department" :disabled="true"/>
+            </b-field>
+            <b-field label="Lokasyon">
+              <b-input :value="tasks.buddyInformation.location.name" :disabled="true"/>
+            </b-field>
+            <b-field label="Ünvan">
+              <b-input :value="tasks.buddyInformation.name" :disabled="true"/>
+            </b-field>
+          </div>
         </div>
       </div>
+      <span>{{ isThirdTabInValid }}</span>
+
     </div>
-    <span>{{ isThirdTabInValid }}</span>
+    <div v-if="!search && !hideBuddyPage" class="field is-grouped">
+      <p v-if="!widgetForm.editItem.flowId" class="control">
+        <button type="submit"
+                class="button is-primary"
+                @click="startEmployment(item)">Personel Girişini Başlat</button>
+      </p>
+
+      <p v-if="!widgetForm.editItem.flowId" class="control">
+        <button :disabled="!isDraft"
+                class="button is-info"
+                @click="saveAsDraft">Taslak Olarak Kaydet</button>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -240,12 +251,28 @@ export default {
     sgkLocation: true
   }),
   computed: {
-    ...mapState(['shared', 'tasks']),
+    ...mapState(['shared', 'tasks', 'widgetForm']),
     isThirdTabInValid() {
       return this.$store.commit(
         'widgetForm/isThirdTabInValid',
         this.$v.$invalid
       )
+    },
+    isDraft() {
+      if (this.edit) {
+        const isDraftEdit =
+          !!this.widgetForm.editItem.enrollment.firstname &&
+          !!this.widgetForm.editItem.enrollment.lastname &&
+          !!this.widgetForm.editItem.enrollment.identityNumber
+
+        return isDraftEdit
+      }
+      const isDraftNew =
+        !!this.widgetForm.item.enrollment.firstname &&
+        !!this.widgetForm.item.enrollment.lastname &&
+        !!this.widgetForm.item.enrollment.identityNumber
+
+      return isDraftNew
     }
   },
 
@@ -341,6 +368,19 @@ export default {
       getBuddy: 'tasks/getBuddy'
     }),
 
+    startEmployment(payload) {
+      this.$v.item.enrollment.$touch()
+      if (!this.$v.$invalid) {
+        this.$store.dispatch('widgetForm/startEmployment', payload)
+      }
+    },
+
+    saveAsDraft() {
+      return this.edit
+        ? this.$store.dispatch('widgetForm/updateAsDraft')
+        : this.$store.dispatch('widgetForm/saveAsDraft')
+    },
+
     checkModelStatus() {
       if (!this.item.enrollment.isBuddyAssigned) {
         delete this.item.enrollment.buddyEmployee
@@ -353,6 +393,10 @@ export default {
       await this.getHrBusinessPartnerEmployees(organizationId)
       await this.getCategories(organizationId)
       this.$store.commit('widgetForm/isCompanyChanged', true)
+
+      if (this.widgetForm.item.enrollment.isSurveySent) {
+        this.$store.dispatch('shared/getSurveyorEmployees')
+      }
     },
 
     async setWorkLocations() {

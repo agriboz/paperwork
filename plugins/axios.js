@@ -62,14 +62,13 @@ export default function({ $axios, store }) {
       store.state.ui.loading = false
 
       convertDateStringsToDates(response)
-
       return response
     },
     error => {
       if (error.response.status === 400) {
         $toast.open({
           type: 'is-danger',
-          message: error.response.statusText
+          message: 'error.response.statusText'
         })
       } else if (error.response.status === 401) {
         $toast.open({
@@ -94,6 +93,8 @@ export default function({ $axios, store }) {
   $axios.onRequest(
     config => {
       store.state.ui.loading = true
+      store.state.ui.loading = false
+
       if (config.method === 'post') {
         for (let key of Object.keys(config.data)) {
           const value = config.data[key]
@@ -106,6 +107,7 @@ export default function({ $axios, store }) {
       return config
     },
     error => {
+      console.table(error)
       return Promise.reject(error)
     }
   )

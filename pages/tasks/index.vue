@@ -14,23 +14,22 @@
           default-sort="id">
 
           <template slot-scope="props">
-            <b-table-column field="id" label="Akış" sortable numeric>
-              {{ props.row.id }}
+            <b-table-column field="id" label="ID" sortable numeric>
+              {{ props.row.documentMasterId }}
             </b-table-column>
             <b-table-column field="startedPerson" label="Kişi" sortable>
               {{ props.row.startedPerson }}
             </b-table-column>
-
-            <b-table-column field="requestStatusId" label="Durum" sortable>
+            <!--  <b-table-column field="requestStatusId" label="Durum" sortable>
               {{ props.row.requestStatusId }}
-            </b-table-column>
+            </b-table-column> -->
             <b-table-column field="requestDate" label="Talep Tarihi" sortable>
               {{ props.row.requestDate !== null ? new Date(props.row.requestDate).toLocaleDateString('tr-TR') : '-' }}
             </b-table-column>
             <b-table-column field="startDate" label="Başlangıç Tarihi" sortable>
               {{ props.row.startDate !== null ? new Date(props.row.startDate).toLocaleDateString('tr-TR') : '-' }}
             </b-table-column>
-            <b-table-column field="statusDescription" label="Açıklama" sortable>
+            <b-table-column field="statusDescription" label="Durum" sortable>
               {{ props.row.statusDescription }}
             </b-table-column>
             <b-table-column label="Aksiyon">

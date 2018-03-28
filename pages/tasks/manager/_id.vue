@@ -31,6 +31,11 @@
               </option>
             </b-select>
           </b-field>
+          <div class="loginUserInfo" style="border-bottom:none">
+            <div v-if="tasks.buddyInformation" class="userPhoto" style="margin: 0 auto">
+              <img :src="`data:image/png;base64, ${tasks.buddyInformation.image}`">
+            </div>
+          </div>
           <b-field v-if="tasks.buddyInformation" label="Sicil Numarası">
             <b-input :value="tasks.buddyInformation.registry" :disabled="true"/>
           </b-field>
@@ -74,8 +79,8 @@ export default {
     ...mapState(['tasks', 'shared'])
   },
   async beforeMount() {
+    this.tasks.buddyInformation = null
     await this.getBuddyEmployees(this.tasks.item.enrollment.company.id)
-    console.log(this.tasks.item.enrollment.buddyEmployee)
     if (this.tasks.item.enrollment.buddyEmployee.id !== null) {
       await this.getBuddy(this.tasks.item.enrollment.buddyEmployee.id)
     }

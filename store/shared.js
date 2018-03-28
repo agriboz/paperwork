@@ -79,9 +79,12 @@ const shared = {
     },
 
     async getSurveyorEmployees({ commit, rootState }) {
-      const id =
-        rootState.widgetForm.editItem.enrollment.organization.id ||
-        rootState.widgetForm.item.enrollment.organization.id
+      let id = null
+      if (rootState.widgetForm.item.enrollment.organization) {
+        id = rootState.widgetForm.item.enrollment.organization.id
+      } else {
+        id = rootState.widgetForm.editItem.enrollment.organization.id
+      }
 
       const { data } = await this.$axios.post(`organization/managers`, {
         id,

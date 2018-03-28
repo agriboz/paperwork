@@ -20,7 +20,8 @@ const widgetForm = {
         isOutsourceTransfer: false,
         isDoctorAppointmentSet: false,
         manager: {
-          name: null
+          name: null,
+          id: null
         }
       }
     },
@@ -74,6 +75,7 @@ const widgetForm = {
 
     manager(state, payload) {
       state.item.enrollment.manager = payload
+      state.editItem.enrollment.manager = payload
     },
 
     addDocumentList(state, payload) {
@@ -89,6 +91,13 @@ const widgetForm = {
 
     addNewDocumentList(state, payload) {
       state.item.documentDetails = [...state.item.documentDetails, payload]
+    },
+
+    setNewDocumentList(state, payload) {
+      console.log(payload)
+      state.item.documentDetails = state.item.documentDetails.filter(
+        item => item.detailId !== payload.detailId
+      )
     }
   },
 
@@ -132,6 +141,7 @@ const widgetForm = {
       }
 
       const sendDraftData = Object.assign({}, getState, {
+        organization: state.item.enrollment.organization,
         entryUser: {
           id: rootState.employee.id
         },
@@ -140,18 +150,26 @@ const widgetForm = {
         }
       })
 
-      await this.$axios.post(`document/employee/`, sendDraftData)
+      await this.$axios
+        .post(`document/employee/`, sendDraftData)
+        .then(() => this.$router.push('/'))
     },
 
-    async updateAsDraft({ state }) {
-      await this.$axios.put(
-        `document/employee/${state.editItem.id}`,
-        state.editItem
-      )
+    async updateAsDraft({ state }, payload) {
+      console.log(payload)
+      await this.$axios
+        .put(`document/employee/${state.editItem.id}`, {
+          ...state.editItem,
+          documentDetails: payload,
+          organization: state.editItem.enrollment.organization
+        })
+        .then(() => this.$router.push('/'))
     },
 
     async deleteDocument({ state }) {
-      await this.$axios.delete(`document/employee/${state.editItem.id}`)
+      await this.$axios
+        .delete(`document/employee/${state.editItem.id}`)
+        .then(() => this.$router.push('/'))
     },
 
     async startEmployment({ rootState }, payload) {
@@ -212,7 +230,7 @@ const widgetForm = {
         `document/employee/${id}`
       )
       status === 200 && data
-        ? this.$router.push('/white-collar')
+        ? this.$router.push('/')
         : this.$toast.open({
             type: 'is-warning',
             message: statusText

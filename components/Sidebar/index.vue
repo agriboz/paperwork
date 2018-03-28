@@ -18,18 +18,38 @@
     </div>
     <aside class="menu">
       <ul class="menu-list">
-        <li v-for="m of menu" v-if="m.visible" :key="m.id">
-          <nuxt-link :to="m.link" class="menu-link" exact>
-            <b-icon :icon="m.icon"/>
-            <span class="menu-item">{{ m.name }}</span>
+        <li v-if="isRecruitmentOperation">
+          <nuxt-link to="/" class="menu-link" exact>
+            <b-icon icon="home"/>
+            <span class="menu-item">İşe Giriş İşlemleri</span>
           </nuxt-link>
           <ul>
-            <li v-for="a of m.children" :key="a.id">
-              <nuxt-link :to="a.link" class="menu-link" exact>
-                <span class="menu-item">{{ a.name }}</span>
+            <li v-if="isRecruitmentOperation">
+              <nuxt-link to="/white-collar" class="menu-link" exact>
+                <b-icon icon="human-handsup"/>
+                <span class="menu-item">BY İşe Giriş</span>
+              </nuxt-link>
+            </li>
+            <li v-if="isRecruitmentOperation">
+              <nuxt-link to="/" class="menu-link" exact>
+                <b-icon icon="account-search"/>
+                <span class="menu-item">BY Arama</span>
               </nuxt-link>
             </li>
           </ul>
+        </li>
+
+        <li>
+          <nuxt-link to="/tasks" class="menu-link" exact>
+            <b-icon icon="file-check"/>
+            <span class="menu-item">Görevlerim</span>
+          </nuxt-link>
+        </li>
+        <li v-if="isDocumentationEmployee">
+          <a href="//10.10.27.36:2215/document-tracking" class="menu-link">
+            <b-icon icon="file"/>
+            <span class="menu-item">Dökümantasyona Gider</span>
+          </a>
         </li>
       </ul>
     </aside>
@@ -41,6 +61,15 @@ import { mapGetters, mapState } from 'vuex'
 
 export default {
   computed: {
+    isDocumentationEmployee() {
+      return this.employee.roles.find(item => item.id === 7)
+    },
+    isClient() {
+      return this.employee.roles.find(item => item.id === 1)
+    },
+    isRecruitmentOperation() {
+      return this.employee.roles.find(item => item.id === 4)
+    },
     ...mapState(['ui', 'employee']),
     ...mapGetters({
       menu: 'ui/menu'
@@ -48,6 +77,7 @@ export default {
   }
 }
 </script>
+
 <style scoped>
 .sidebar {
   top: 1rem;

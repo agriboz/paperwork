@@ -13,14 +13,24 @@
                    icon="account"/>
         </b-field>
       </div>
-      <div class="column">
-        <a class="button is-info is-outlined">
+      <div v-if="edit" class="column">
+        <a class="button is-info is-outlined" @click="isCardModalActive = true">
           <b-icon icon="email" />
           <span>İletişim Geçmişi</span>
         </a>
+        <br>
+        <br>
+        <a v-if="item.flowId" class="button is-success is-outlined" @click="isSendingInfoModalActive = true">
+          <b-icon icon="clipboard-outline" />
+          <span>Durum Geçmişi</span>
+        </a>
       </div>
+
       <b-modal :active.sync="isCardModalActive">
         <Document-history />
+      </b-modal>
+      <b-modal :active.sync="isSendingInfoModalActive">
+        <Sending-info />
       </b-modal>
     </div>
   </div>
@@ -28,13 +38,17 @@
 
 <script>
 import DocumentHistory from '~/components/DocumentHistory'
+import SendingInfo from '~/components/SendingInfo'
+
 export default {
   components: {
-    DocumentHistory
+    DocumentHistory,
+    SendingInfo
   },
   props: ['item', 'edit'],
   data: () => ({
-    isCardModalActive: false
+    isCardModalActive: false,
+    isSendingInfoModalActive: false
   })
 }
 </script>

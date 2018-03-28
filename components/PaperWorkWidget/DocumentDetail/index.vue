@@ -20,7 +20,7 @@
     </div>
     <!-- edit ? widgetForm.editItem.documentDetails : widgetForm.item.documentDetails" -->
     <b-table
-      :data="widgetForm.item.documentDetails"
+      :data="edit && !widgetForm.editItem.documentDetails.length ? widgetForm.item.documentDetails : widgetForm.editItem.documentDetails"
       :paginated="ui.tableOpts.isPaginated"
       :per-page="ui.tableOpts.perPage"
       :pagination-simple="ui.tableOpts.isPaginationSimple"
@@ -37,20 +37,26 @@
         <b-table-column field="sendRemindingEmail" label="Hatırlatma E-Postası Gönderilsin mi?" sortable>
           {{ props.row.sendRemindingEmail ? 'Evet' : 'Hayır' }}
         </b-table-column>
-        <b-table-column field="documentStatus" label="Durum">
-          <b-field>
+        <b-table-column field="documentStatus" label="Evrak Bekleniyor mu?">
+          <b-switch v-model="props.row.documentStatusBool">
+            {{ props.row.documentStatusBool ? 'Evet' : 'Hayır' }}
+          </b-switch>
+
+          <!-- <b-field>
             <b-select v-model="props.row.documentStatus"
                       :selected="props.row.documentStatus = shared.documentStatus[0]"
-                      placeholder="Seçiniz..."
-                      @input="deneme(props.row, props.index)">
+                      placeholder="Seçiniz...">
 
               <option v-for="d in shared.documentStatus" :key="d.id" :value="d">
                 {{ d.name }}
               </option>
             </b-select>
-            <!-- :disabled="notEditable || !edit" -->
-            <!-- @change.native="changeDocumentStatus(props.row.document.id, props.row.documentStatus) -->
-          </b-field>
+            :disabled="notEditable || !edit"
+            @change.native="changeDocumentStatus(props.row.document.id, props.row.documentStatus)
+          </b-field> -->
+        </b-table-column>
+        <b-table-column label="Aksiyon">
+          <button class="button is-danger" @click="removeDocument(props.row)">Evrak Sil</button>
         </b-table-column>
       </template>
       <template slot="empty">
@@ -66,6 +72,22 @@
         </section>
       </template>
     </b-table>
+    <!-- <b-message v-if="!widgetForm.isFirstTabInValid || widgetForm.isSecondTabInValid || widgetForm.isThirdTabInValid" type="is-warning">
+      Personel giriş işlemini başlatmak için lütfen zorunlu alanları doldurunuz.
+    </b-message> -->
+
+    <div class="field is-grouped">
+      <p v-if="!widgetForm.editItem.flowId" class="control">
+        <button type="submit"
+                class="button is-primary"
+                @click="startEmployment(item)">Personel Girişini Başlat</button>
+      </p>
+      <p v-if="!widgetForm.editItem.flowId" class="control">
+        <button :disabled="!isDraft"
+                class="button is-info"
+                @click="saveAsDraft">Taslak Olarak Kaydet</button>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -80,16 +102,51 @@ export default {
     showDocument: false
   }),
   computed: {
-    ...mapState(['ui', 'documentDetail', 'widgetForm', 'shared'])
+    ...mapState(['ui', 'documentDetail', 'widgetForm', 'shared']),
+    isDraft() {
+      if (this.edit) {
+        const isDraftEdit =
+          !!this.widgetForm.editItem.enrollment.firstname &&
+          !!this.widgetForm.editItem.enrollment.lastname &&
+          !!this.widgetForm.editItem.enrollment.identityNumber
+
+        return isDraftEdit
+      }
+      const isDraftNew =
+        !!this.widgetForm.item.enrollment.firstname &&
+        !!this.widgetForm.item.enrollment.lastname &&
+        !!this.widgetForm.item.enrollment.identityNumber
+
+      return isDraftNew
+    }
   },
   beforeMount() {
     this.$store.dispatch('shared/getDocumentStatus')
   },
   methods: {
-    deneme(data, index) {
-      const payload = { data, index }
-      console.log(payload.data.documentStatus.name)
-      this.$store.commit('widgetForm/updateDocumentsList', payload)
+    startEmployment(payload) {
+      if (
+        this.widgetForm.isFirstTabInValid &&
+        this.widgetForm.isSecondTabInValid &&
+        this.widgetForm.isThirdTabInValid
+      ) {
+        this.$store.dispatch('widgetForm/startEmployment', payload)
+      }
+    },
+    saveAsDraft() {
+      let payload
+      if (this.widgetForm.editItem.documentDetails.length) {
+        payload = this.widgetForm.editItem.documentDetails
+      }
+      if (this.widgetForm.item.documentDetails.length) {
+        payload = this.widgetForm.item.documentDetails
+      }
+      return this.edit
+        ? this.$store.dispatch('widgetForm/updateAsDraft', payload)
+        : this.$store.dispatch(
+            'widgetForm/saveAsDraft',
+            this.widgetForm.item.documentDetails
+          )
     },
     selectDocument: debounce(function(option) {
       const editedCollection = this.widgetForm.editItem.documentDetails
@@ -110,7 +167,6 @@ export default {
                 } adlı evrak evrak listesinde tanımlı`
               })
         } else {
-          console.log('object')
           return !isDocumentAlreadyAdded(newCollection)
             ? this.$store.dispatch('widgetForm/addNewDocumentList', option)
             : this.$toast.open({
@@ -135,6 +191,10 @@ export default {
 
     addDocument() {
       this.showDocument = !this.showDocument
+    },
+
+    removeDocument(item) {
+      this.$store.commit('widgetForm/setNewDocumentList', item)
     },
 
     async changeDocumentStatus(id, documentStatus) {

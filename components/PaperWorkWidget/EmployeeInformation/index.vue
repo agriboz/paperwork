@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <b-field v-if="identityNumber && edit" label="Sicil Numarası">
       <b-input v-model="item.enrollment.registery" name="registery" disabled/>
     </b-field>
@@ -8,16 +7,14 @@
              :message="$v.item.enrollment.firstname.$error ? 'Zorunlu alan': ''"
              label="Ad" >
       <b-input v-model="item.enrollment.firstname"
-               :disabled="notEditable"
-               @input="$v.item.enrollment.firstname.$touch()" />
+               :disabled="notEditable"/>
     </b-field>
     <b-field :type="$v.item.enrollment.lastname.$error ? 'is-danger' : ''"
              :message="$v.item.enrollment.lastname.$error ? 'Zorunlu alan': ''"
              label="Soyad">
       <b-input v-model="item.enrollment.lastname"
                :disabled="notEditable"
-               name="lastName"
-               @input="$v.item.enrollment.lastname.$touch()"/>
+               name="lastName"/>
     </b-field>
 
     <b-field v-if="!search && !hideBuddyPage"
@@ -27,8 +24,7 @@
       <b-input v-model="item.enrollment.email"
                :disabled="notEditable"
                type="email"
-               maxlength="50"
-               @input="$v.item.enrollment.email.$touch()" />
+               maxlength="50" />
     </b-field>
     <!-- v-if="!search && !hideBuddyPage" -->
     <b-field :type="$v.item.enrollment.gsmTel.$error ? 'is-danger' : ''"
@@ -38,7 +34,7 @@
               :disabled="notEditable"
               :masked="false"
               placeholder="(500) 000 00 00"
-              mask="(5##) ### ## ##" class="input" type="text" @input="$v.item.enrollment.gsmTel.$touch()" />
+              mask="(5##) ### ## ##" class="input" type="text" />
 
     <b-field v-if="!hideBuddyPage"
              :type="$v.item.enrollment.identityNumber.$error ? 'is-danger' : ''"
@@ -49,8 +45,7 @@
                name="identity"
                type="text"
                maxlength="11"
-               minlength="11"
-               @input="$v.item.enrollment.identityNumber.$touch()"/>
+               minlength="11" />
     </b-field>
     <b-field v-if="!search && !hideBuddyPage"
              :type="$v.item.enrollment.contactType.$error ? 'is-danger' : ''"
@@ -58,8 +53,7 @@
              label="İletişim Yolu">
       <b-select v-model="item.enrollment.contactType"
                 :disabled="notEditable"
-                placeholder="Seçiniz..."
-                @input="$v.item.enrollment.contactType.$touch()">
+                placeholder="Seçiniz...">
         <option v-for="c in shared.channels" :key="c.id" :value="c" >
           {{ c.name }}
         </option>
@@ -71,9 +65,23 @@
              label="Personele Gönderilecek Hoşgeldin Linki">
       <b-input v-model="item.enrollment.welcomeUri"
                :disabled="notEditable"
-               placeholder="http://"
-               @input="$v.item.enrollment.welcomeUri.$touch()"/>
+               placeholder="http://"/>
     </b-field>
+
+    <div v-if="!search && !hideBuddyPage" class="field is-grouped">
+      <p v-if="!widgetForm.editItem.flowId" class="control">
+        <button type="submit"
+                class="button is-primary"
+                @click="startEmployment(item)">Personel Girişini Başlat</button>
+      </p>
+
+      <p v-if="!widgetForm.editItem.flowId" class="control">
+        <button :disabled="!isDraft"
+                class="button is-info"
+                @click="saveAsDraft">Taslak Olarak Kaydet</button>
+      </p>
+    </div>
+
     <span>{{ isFirstTabInValid }}</span>
   </div>
 </template>
@@ -103,7 +111,23 @@ export default {
   ],
 
   computed: {
-    ...mapState(['shared']),
+    ...mapState(['shared', 'widgetForm']),
+    isDraft() {
+      if (this.edit) {
+        const isDraftEdit =
+          !!this.widgetForm.editItem.enrollment.firstname &&
+          !!this.widgetForm.editItem.enrollment.lastname &&
+          !!this.widgetForm.editItem.enrollment.identityNumber
+
+        return isDraftEdit
+      }
+      const isDraftNew =
+        !!this.widgetForm.item.enrollment.firstname &&
+        !!this.widgetForm.item.enrollment.lastname &&
+        !!this.widgetForm.item.enrollment.identityNumber
+
+      return isDraftNew
+    },
     isFirstTabInValid() {
       return this.$store.commit(
         'widgetForm/isFirstTabInValid',
@@ -149,6 +173,17 @@ export default {
     this.getChannels()
   },
   methods: {
+    startEmployment(payload) {
+      this.$v.item.enrollment.$touch()
+      if (!this.$v.$invalid) {
+        this.$store.dispatch('widgetForm/startEmployment', payload)
+      }
+    },
+    saveAsDraft() {
+      return this.edit
+        ? this.$store.dispatch('widgetForm/updateAsDraft')
+        : this.$store.dispatch('widgetForm/saveAsDraft')
+    },
     ...mapActions({
       getChannels: 'shared/getChannels'
     })

@@ -1,7 +1,7 @@
 <template>
   <div class="modal-card">
     <header class="modal-card-head">
-      <p class="modal-card-title">Süreç Geçmişi</p>
+      <p class="modal-card-title">İletişim Geçmişi</p>
     </header>
     <section class="modal-card-body">
       <b-table
@@ -60,14 +60,14 @@
 import { mapActions, mapState } from 'vuex'
 export default {
   computed: {
-    ...mapState(['ui', 'documentHistory'])
+    ...mapState(['ui', 'sendingInfo'])
   },
   mounted() {
-    this.getDocumentHistory()
+    this.getSendingInfo()
   },
   methods: {
     ...mapActions({
-      getDocumentHistory: 'documentHistory/getDocumentHistory'
+      getSendingInfo: 'documentHistory/getSendingInfo'
     })
   }
 }

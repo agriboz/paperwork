@@ -101,6 +101,8 @@ export default {
   },
 
   beforeMount() {
+    const state = JSON.parse(localStorage.getItem('state'))
+    this.resetState(state.widgetForm.item)
     this.makeSearch(this.widgetForm.item).then(() => {
       const searchWrapper = document.getElementById('document-search-result')
       searchWrapper.scrollIntoView({

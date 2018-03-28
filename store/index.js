@@ -55,6 +55,6 @@ const createStore = () => {
 
 // createStore().dispatch('appInit')
 
-// localStorage.setItem('state', JSON.stringify(createStore().state))
+localStorage.setItem('state', JSON.stringify(createStore().state))
 
 export default createStore
