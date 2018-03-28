@@ -86,6 +86,7 @@ const widgetForm = {
     },
 
     setDocumentList(state, payload) {
+      console.log(state.item.documentDetails)
       state.item.documentDetails = payload
     },
 
@@ -109,7 +110,7 @@ const widgetForm = {
         payload
       )
 
-      return data ? commit('setDocumentList', data) : null
+      return data.length ? commit('setDocumentList', data) : null
     },
 
     async getEditItem({ commit }, payload) {
@@ -156,7 +157,6 @@ const widgetForm = {
     },
 
     async updateAsDraft({ state }, payload) {
-      console.log(payload)
       await this.$axios
         .put(`document/employee/${state.editItem.id}`, {
           ...state.editItem,
@@ -198,7 +198,9 @@ const widgetForm = {
         }
       })
 
-      await this.$axios.post(`document/employee/startEmployment`, sendDraftData)
+      await this.$axios
+        .post(`document/employee/startEmployment`, sendDraftData)
+        .then(() => this.$router.push('/'))
     },
 
     async startBPProcess({ rootState }) {

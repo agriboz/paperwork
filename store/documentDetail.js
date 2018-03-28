@@ -2,6 +2,8 @@ const documentDetail = {
   namespaced: true,
   state: {
     documentsList: [],
+    maximoHistory: [],
+    maximoEmail: [],
     mandatoryDocuments: true
   },
   mutations: {
@@ -12,6 +14,10 @@ const documentDetail = {
       state.documentsList = payload
       // todo: fix this state 1 = new document
       state.documentsList[0].documentState = 1
+    },
+    setMaximo(state, payload) {
+      state.maximoHistory = payload[0]
+      state.maximoEmail = payload[1]
     }
   },
   getters: {},
@@ -37,6 +43,13 @@ const documentDetail = {
         payload
       )
       return data ? commit('setDocumentsList', data) : null
+    },
+
+    async getMaximo({ commit }, id) {
+      const { data } = await this.$axios.get(
+        `document/employee/maximo/${id}/history`
+      )
+      return data ? commit('setMaximo', data) : null
     }
   }
 }

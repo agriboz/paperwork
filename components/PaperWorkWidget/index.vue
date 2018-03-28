@@ -178,7 +178,7 @@ export default {
       const { id } = this.edit ? this.widgetForm.editItem : this.widgetForm.item
       const {
         organization,
-        category,
+        organizationDocumentCategory,
         isExistsPersonalPrivateHealthInsurance,
         isHealthInsuranceIncludeFamily,
         isDisabled,
@@ -191,7 +191,7 @@ export default {
       return this.activeTab === 3
         ? this.$store.dispatch('widgetForm/getDocumentDetails', {
             organization,
-            category,
+            category: organizationDocumentCategory,
             isExistsPersonalPrivateHealthInsurance,
             isHealthInsuranceIncludeFamily,
             isDisabled,

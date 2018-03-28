@@ -137,13 +137,13 @@
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
-        <b-field v-if="search"
-                 label="Kıdem Başlangıç Başlangıç Tarihi">
+        <b-field v-if="search && item.enrollment.isOutsourceTransfer"
+                 label="Kıdem Başlangıç Bitiş Tarihi">
           <b-datepicker v-model="item.enrollment.seniorityStartDateBegin"
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
-        <b-field v-if="search"
+        <b-field v-if="search && item.enrollment.isOutsourceTransfer"
                  label="Kıdem Başlangıç Bitiş Tarihi">
           <b-datepicker v-model="item.enrollment.seniorityStartDateEnd"
                         placeholder="Seçiniz..."
@@ -157,13 +157,13 @@
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
-        <b-field v-if="search"
+        <b-field v-if="search && item.enrollment.isOutsourceTransfer"
                  label="Çıkış Başlangıç Tarihi">
           <b-datepicker v-model="item.enrollment.leaveDateEndBegin"
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
-        <b-field v-if="search"
+        <b-field v-if="search && item.enrollment.isOutsourceTransfer"
                  label="Çıkış Bitiş Tarihi">
           <b-datepicker v-model="item.enrollment.leaveDateEnd"
                         placeholder="Seçiniz..."
@@ -177,13 +177,13 @@
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
-        <b-field v-if="search"
+        <b-field v-if="search && item.enrollment.isOutsourceTransfer"
                  label="Haklarıyla Devir Başlangıç Tarihi">
           <b-datepicker v-model="item.enrollment.transferDateBegin"
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
-        <b-field v-if="search"
+        <b-field v-if="search && item.enrollment.isOutsourceTransfer"
                  label="Haklarıyla Devir Bitiş Tarihi">
           <b-datepicker v-model="item.enrollment.transferDateEnd"
                         placeholder="Seçiniz..."
@@ -203,12 +203,12 @@
                        min="1"
                        max="99"
                        style="width:30%" />
-              <b-input v-if="search" v-model="item.enrollment.leaveDayCostBegin"
+              <b-input v-if="search && item.enrollment.isOutsourceTransfer" v-model="item.enrollment.leaveDayCostBegin"
                        placeholder="İzin Yükü"
                        type="number"
                        min="1"
                        max="99" style="width:30%"/>
-              <b-input v-if="search" v-model="item.enrollment.leaveDayCostEnd"
+              <b-input v-if="search && item.enrollment.isOutsourceTransfer" v-model="item.enrollment.leaveDayCostEnd"
                        placeholder="İzin Yükü"
                        type="number"
                        min="1"

@@ -2,11 +2,10 @@
   <div>
     <div class="columns">
       <div class="column">
-
         <b-field :type="$v.item.enrollment.organization.$error ? 'is-danger' : ''"
                  :message="$v.item.enrollment.organization.$error ? 'Zorunlu alan': ''"
                  label="Organizasyon">
-          <b-select v-model="item.enrollment.organization"
+          <b-select v-model.trim="item.enrollment.organization"
                     :disabled="notEditable"
                     placeholder="Seçiniz..."
                     expanded
@@ -183,9 +182,7 @@
           </b-radio>
         </div>
         <div v-if="item.enrollment.isBuddyAssigned && item.enrollment.company" class="form-wrapper" title="Buddy Bilgileri" style="margin-top:40px">
-          <b-field :type="$v.item.enrollment.buddyEmployee.$error ? 'is-danger' : ''"
-                   :message="$v.item.enrollment.buddyEmployee.$error ? 'Zorunlu alan': ''"
-                   label="Buddy">
+          <b-field label="Buddy">
             <b-select v-model="item.enrollment.buddyEmployee"
                       :disabled="!item.enrollment.isBuddyAssigned"
                       placeholder="Seçiniz..."
@@ -235,6 +232,7 @@
 </template>
 
 <script>
+// const defined = v => v !== undefined && v !== null
 import debounce from 'lodash/debounce'
 import { mapState, mapActions } from 'vuex'
 import {
@@ -273,6 +271,10 @@ export default {
         !!this.widgetForm.item.enrollment.identityNumber
 
       return isDraftNew
+    },
+    isOptional(value) {
+      console.log(value)
+      return value.organization.id === null // some conditional logic here...
     }
   },
 
@@ -313,11 +315,6 @@ export default {
         buddyType: {
           requiredIf: requiredIf(vueInstance => {
             return !vueInstance.isBuddyAssigned
-          })
-        },
-        buddyEmployee: {
-          requiredIf: requiredIf(vueInstance => {
-            return vueInstance.isBuddyAssigned
           })
         }
       }

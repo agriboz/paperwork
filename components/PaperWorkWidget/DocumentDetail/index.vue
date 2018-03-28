@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="!notEditable" class="buttons has-addons is-right">
+    <div v-if="!notEditable && !widgetForm.editItem.flowId" class="buttons has-addons is-right">
       <a class="button is-info" @click.prevent="addDocument">Evrak Ekle</a>
     </div>
     <div v-if="showDocument" class="form-wrapper" title="Evrak Ekle" style="margin-bottom:30px">
@@ -20,12 +20,11 @@
     </div>
     <!-- edit ? widgetForm.editItem.documentDetails : widgetForm.item.documentDetails" -->
     <b-table
-      :data="edit && !widgetForm.editItem.documentDetails.length ? widgetForm.item.documentDetails : widgetForm.editItem.documentDetails"
+      :data="edit && !widgetForm.editItem.documentDetails.length ? widgetForm.item.documentDetails : widgetForm.item.documentDetails"
       :paginated="ui.tableOpts.isPaginated"
       :per-page="ui.tableOpts.perPage"
       :pagination-simple="ui.tableOpts.isPaginationSimple"
-      :default-sort-direction="ui.tableOpts.defaultSortDirection"
-      default-sort="document.id">
+      :default-sort-direction="ui.tableOpts.defaultSortDirection">
 
       <template slot-scope="props">
         <b-table-column field="document.id" label="Evrak Adı" sortable numeric>
@@ -37,7 +36,7 @@
         <b-table-column field="sendRemindingEmail" label="Hatırlatma E-Postası Gönderilsin mi?" sortable>
           {{ props.row.sendRemindingEmail ? 'Evet' : 'Hayır' }}
         </b-table-column>
-        <b-table-column field="documentStatus" label="Evrak Bekleniyor mu?">
+        <b-table-column field="documentStatus" label="Evrak Teslim Alındı mı?">
           <b-switch v-model="props.row.documentStatusBool">
             {{ props.row.documentStatusBool ? 'Evet' : 'Hayır' }}
           </b-switch>
@@ -55,7 +54,7 @@
             @change.native="changeDocumentStatus(props.row.document.id, props.row.documentStatus)
           </b-field> -->
         </b-table-column>
-        <b-table-column label="Aksiyon">
+        <b-table-column v-if="!widgetForm.editItem.flowId" label="Aksiyon">
           <button class="button is-danger" @click="removeDocument(props.row)">Evrak Sil</button>
         </b-table-column>
       </template>
@@ -126,9 +125,9 @@ export default {
   methods: {
     startEmployment(payload) {
       if (
-        this.widgetForm.isFirstTabInValid &&
-        this.widgetForm.isSecondTabInValid &&
-        this.widgetForm.isThirdTabInValid
+        !this.widgetForm.isFirstTabInValid &&
+        !this.widgetForm.isSecondTabInValid &&
+        !this.widgetForm.isThirdTabInValid
       ) {
         this.$store.dispatch('widgetForm/startEmployment', payload)
       }
