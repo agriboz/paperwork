@@ -3,7 +3,7 @@
     <header class="modal-card-head">
       <p class="modal-card-title">{{ title }}</p>
     </header>
-    <!-- <section class="modal-card-body">
+    <section class="modal-card-body">
       <b-table
         :data="documentDetail.maximoHistory"
         :paginated="ui.tableOpts.isPaginated"
@@ -18,7 +18,7 @@
             {{ props.row.recordKey }}
           </b-table-column>
           <b-table-column field="createDate" label="Oluşturulma Tarihi" sortable>
-            {{ props.row.createDate }}
+            {{ new Date(props.row.createDate).toLocaleDateString('Tr-tr') }}
           </b-table-column>
           <b-table-column field="longDescription" label="Açıklama" sortable>
             {{ props.row.longDescription }}
@@ -37,7 +37,7 @@
           </section>
         </template>
       </b-table>
-    </section> -->
+    </section>
     <footer class="modal-card-foot align-end">
       <button class="button" type="button" @click="$parent.close()">Kapat</button>
     </footer>

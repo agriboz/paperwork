@@ -1,7 +1,7 @@
 <template>
   <div class="modal-card">
     <header class="modal-card-head">
-      <p class="modal-card-title">Süreç Geçmişi</p>
+      <p class="modal-card-title">İletişim Geçmişi</p>
     </header>
     <section class="modal-card-body">
       <b-table
@@ -10,30 +10,29 @@
         :per-page="ui.tableOpts.perPage"
         :pagination-simple="ui.tableOpts.isPaginationSimple"
         :default-sort-direction="ui.tableOpts.defaultSortDirection"
-        :loading="ui.tableOpts.isLoading"
-        default-sort="id">
+        :loading="ui.tableOpts.isLoading">
 
         <template slot-scope="props">
           <b-table-column field="id" label="ID" sortable numeric>
             {{ props.row.id }}
           </b-table-column>
-          <b-table-column field="person" label="Kişi" sortable>
-            {{ props.row.person }}
+          <b-table-column field="subject" label="Başlık" sortable>
+            {{ props.row.subject }}
           </b-table-column>
-          <b-table-column field="process" label="Process" sortable>
-            {{ props.row.process }}
+          <b-table-column field="email" label="E-posta" sortable>
+            {{ props.row.email }}
           </b-table-column>
-          <b-table-column field="status" label="Durum" sortable>
-            {{ props.row.status }}
+          <b-table-column field="gsmTel" label="Cep Telefonu" sortable>
+            {{ props.row.gsmTel }}
           </b-table-column>
-          <b-table-column field="requestDate" label="Talep Tarihi" sortable>
-            {{ props.row.requestDate !== null ? new Date(props.row.requestDate).toLocaleDateString('tr-TR') : '-' }}
+          <b-table-column field="insertDate" label="Talep Tarihi" sortable>
+            {{ props.row.insertDate !== null ? new Date(props.row.insertDate).toLocaleDateString('tr-TR') : '-' }}
           </b-table-column>
-          <b-table-column field="responseDate" label="responseDate" sortable>
-            {{ props.row.responseDate !== null ? new Date(props.row.responseDate).toLocaleDateString('tr-TR') : '-' }}
+          <b-table-column field="contactType" label="İletişim Tipi" sortable>
+            {{ props.row.contactType.name }}
           </b-table-column>
-          <b-table-column field="statusDescription" label="Açıklama" sortable>
-            {{ props.row.statusDescription }}
+          <b-table-column field="sendingDocumentTemplate" label="Açıklama" sortable>
+            {{ props.row.sendingDocumentTemplate.name }}
           </b-table-column>
         </template>
         <template slot="empty">

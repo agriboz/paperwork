@@ -13,6 +13,7 @@ import DocumentStatus from '@/components/DocumentStatus'
 import PaperWorkWidget from '@/components/PaperWorkWidget'
 
 export default {
+  middleware: 'auth',
   components: {
     DocumentStatus,
     PaperWorkWidget

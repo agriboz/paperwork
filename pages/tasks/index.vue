@@ -34,7 +34,9 @@
             </b-table-column>
             <b-table-column label="Aksiyon">
               <!-- <nuxt-link class="button is-primary" :to="'tasks/' + props.row.id">Detay</nuxt-link> -->
-              <nuxt-link :to="'tasks/manager/' + props.row.id" class="button is-primary">Detay</nuxt-link>
+              <nuxt-link v-if="props.row.requestObject === 'pozAmir'" :to="'tasks/manager/' + props.row.id" class="button is-primary">Detay</nuxt-link>
+              <nuxt-link v-if="props.row.requestObject === 'pozGrupIseAlim'" :to="'white-collar/edit/' + props.row.id" class="button is-primary">Detay</nuxt-link>
+              <nuxt-link v-if="props.row.requestObject === 'pozGrupDokumantasyon'" :to="'linkgelecek' + props.row.id" class="button is-primary">Detay</nuxt-link>
             </b-table-column>
           </template>
           <template slot="empty">

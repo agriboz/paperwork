@@ -98,6 +98,7 @@ import {
   email,
   url
 } from 'vuelidate/lib/validators'
+import { formValidation, checkEmptyDropDown } from '../../../common'
 
 export default {
   components: { TheMask },
@@ -160,7 +161,7 @@ export default {
           maxLength: maxLength(10)
         },
         contactType: {
-          required
+          checkEmptyDropDown
         },
         welcomeUri: {
           required,
@@ -174,6 +175,7 @@ export default {
   },
   methods: {
     startEmployment(payload) {
+      formValidation(this.widgetForm)
       this.$v.item.enrollment.$touch()
       if (!this.$v.$invalid) {
         this.$store.dispatch('widgetForm/startEmployment', payload)

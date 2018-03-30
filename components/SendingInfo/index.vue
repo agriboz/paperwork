@@ -1,11 +1,11 @@
 <template>
   <div class="modal-card">
     <header class="modal-card-head">
-      <p class="modal-card-title">İletişim Geçmişi</p>
+      <p class="modal-card-title">Durum Geçmişi</p>
     </header>
     <section class="modal-card-body">
       <b-table
-        :data="documentHistory.data"
+        :data="documentHistory.sendingInfo"
         :paginated="ui.tableOpts.isPaginated"
         :per-page="ui.tableOpts.perPage"
         :pagination-simple="ui.tableOpts.isPaginationSimple"
@@ -50,9 +50,9 @@
         </template>
       </b-table>
     </section>
-    <!--<footer class="modal-card-foot align-end">
+    <footer class="modal-card-foot align-end">
       <button class="button" type="button" @click="$parent.close()">Kapat</button>
-    </footer>-->
+    </footer>
   </div>
 </template>
 
@@ -60,10 +60,10 @@
 import { mapActions, mapState } from 'vuex'
 export default {
   computed: {
-    ...mapState(['ui', 'sendingInfo'])
+    ...mapState(['ui', 'documentHistory'])
   },
-  mounted() {
-    this.getSendingInfo()
+  beforeMount() {
+    this.getSendingInfo(this.$router.history.current.params.id)
   },
   methods: {
     ...mapActions({

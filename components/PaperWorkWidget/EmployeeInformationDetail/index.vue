@@ -1,11 +1,14 @@
 <template>
   <div>
+
     <div class="columns">
       <div class="column">
         <b-field :type="$v.item.enrollment.recruitmentEmployee.$error ? 'is-danger' : ''"
                  :message="$v.item.enrollment.recruitmentEmployee.$error ? 'Zorunlu alan': ''"
                  label="İşe Alım Uzmanı">
-          <b-select v-model="item.enrollment.recruitmentEmployee" expanded
+          <b-select v-model="item.enrollment.recruitmentEmployee"
+                    :disabled="!!!!widgetForm.editItem.flowId"
+                    expanded
                     placeholder="Seçiniz...">
             <option v-for="r in shared.reqruitmentEmployees" :key="r.id" :value="r">
               {{ r.name }}
@@ -18,11 +21,12 @@
                  label="İşe Başlangıç Tarihi">
           <b-datepicker
             v-model="item.enrollment.startWorkDate"
+            :disabled="!!widgetForm.editItem.flowId"
             placeholder="Seçiniz..."
             icon="calendar-today"/>
         </b-field>
         <div class="field">
-          <b-switch v-model="item.enrollment.isSurveySent" @input="checkModelStatus(); getSurveyorEmployees()">
+          <b-switch v-model="item.enrollment.isSurveySent" :disabled="!!widgetForm.editItem.flowId" @input="checkModelStatus(); getSurveyorEmployees()">
             Anket Gönderildi
           </b-switch>
         </div>
@@ -34,30 +38,31 @@
                  :message="$v.item.enrollment.surveyorEmployee.$error ? 'Zorunlu alan': ''"
                  label="Anket Gönderilen Yönetici">
           <b-select v-model="item.enrollment.surveyorEmployee"
+                    :disabled="!!widgetForm.editItem.flowId"
                     placeholder="Seçiniz..."
                     expanded>
-            <option v-for="r in shared.surveyorEmployees" :key="r.id" :value="r">
+            <option v-for="r in shared.surveyorEmployees" :key="r.id" :value="r" :disabled="!!widgetForm.editItem.flowId">
               {{ r.name }}
             </option>
           </b-select>
         </b-field>
         <div v-if="!search" class="field">
-          <b-switch v-model="item.enrollment.isTookEngilshExam">
+          <b-switch v-model="item.enrollment.isTookEngilshExam" :disabled="!!widgetForm.editItem.flowId">
             İngilizce Sınavı Yapıldı
           </b-switch>
         </div>
         <div class="field">
-          <b-switch v-model="item.enrollment.isExistsPersonalPrivateHealthInsurance">
+          <b-switch v-model="item.enrollment.isExistsPersonalPrivateHealthInsurance" :disabled="!!widgetForm.editItem.flowId">
             Özel sağlık sigortası var mı?
           </b-switch>
         </div>
         <div class="field">
-          <b-switch v-model="item.enrollment.isHealthInsuranceIncludeFamily">
+          <b-switch v-model="item.enrollment.isHealthInsuranceIncludeFamily" :disabled="!!widgetForm.editItem.flowId">
             Aileyi kapsıyor mu?
           </b-switch>
         </div>
         <div v-if="!search" class="field">
-          <b-switch v-model="item.enrollment.isSendWelcomeKit" @input="checkModelStatus">
+          <b-switch v-model="item.enrollment.isSendWelcomeKit" :disabled="!!widgetForm.editItem.flowId" @input="checkModelStatus" >
             Hoşgeldin kiti gönderilecek mi?
           </b-switch>
         </div>
@@ -66,15 +71,17 @@
                  :message="$v.item.enrollment.welcomeKitType.$error ? 'Zorunlu alan': ''"
                  label="Kit Tipi">
           <b-select v-model="item.enrollment.welcomeKitType"
+                    :disabled="!!widgetForm.editItem.flowId"
                     placeholder="Seçiniz..."
                     expanded>
-            <option v-for="w in shared.welcomeKitTypes" :key="w.id" :value="w">
+            <option v-for="w in shared.welcomeKitTypes" :key="w.id" :value="w" :disabled="!!widgetForm.editItem.flowId">
               {{ w.name }}
             </option>
           </b-select>
         </b-field>
         <b-field v-if="!search" label="Duyuru Detayı">
           <b-input v-model="item.enrollment.announcementDetail"
+                   :disabled="!!widgetForm.editItem.flowId"
                    type="textarea"
                    minlength="10"
                    maxlength="300"
@@ -83,27 +90,27 @@
       </div>
       <div class="column">
         <div class="field">
-          <b-switch v-model="item.enrollment.isDoctorAppointmentSet">
+          <b-switch v-model="item.enrollment.isDoctorAppointmentSet" :disabled="!!widgetForm.editItem.flowId">
             Hekim randevusu verildi mi?
           </b-switch>
         </div>
         <div class="field">
-          <b-switch v-model="item.enrollment.isDisabled">
+          <b-switch v-model="item.enrollment.isDisabled" :disabled="!!widgetForm.editItem.flowId">
             Engelli personel mi?
           </b-switch>
         </div>
         <div class="field">
-          <b-switch v-model="item.enrollment.isRetired">
+          <b-switch v-model="item.enrollment.isRetired" :disabled="!!widgetForm.editItem.flowId">
             Emekli
           </b-switch>
         </div>
         <div class="field">
-          <b-switch v-model="item.enrollment.isFormerWorker">
+          <b-switch v-model="item.enrollment.isFormerWorker" :disabled="!!widgetForm.editItem.flowId">
             Eski Çalışan
           </b-switch>
         </div>
         <div class="field">
-          <b-switch v-model="item.enrollment.isOutsourceTransfer" @input="checkModelStatus">
+          <b-switch v-model="item.enrollment.isOutsourceTransfer" :disabled="!!widgetForm.editItem.flowId" @input="checkModelStatus">
             Taşeron Firma Geçişi
           </b-switch>
         </div>
@@ -111,7 +118,7 @@
                  :type="$v.item.enrollment.outsourceTransferCompany.$error ? 'is-danger' : ''"
                  :message="$v.item.enrollment.outsourceTransferCompany.$error ? 'Zorunlu alan': ''"
                  label="Taşeron Firma Adı">
-          <b-input v-model="item.enrollment.outsourceTransferCompany" />
+          <b-input v-model="item.enrollment.outsourceTransferCompany" :disabled="!!widgetForm.editItem.flowId" />
         </b-field>
         <!-- <b-field v-if="item.enrollment.isOutsourceTransfer"
                  :type="$v.item.enrollment.startWorkDateBegin.$error ? 'is-danger' : ''"
@@ -134,18 +141,21 @@
                  :message="$v.item.enrollment.seniorityStartDate.$error ? 'Zorunlu alan': ''"
                  label="Kıdem Başlangıç Tarihi">
           <b-datepicker v-model="item.enrollment.seniorityStartDate"
+                        :disabled="!!widgetForm.editItem.flowId"
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
         <b-field v-if="search && item.enrollment.isOutsourceTransfer"
                  label="Kıdem Başlangıç Bitiş Tarihi">
           <b-datepicker v-model="item.enrollment.seniorityStartDateBegin"
+                        :disabled="!!widgetForm.editItem.flowId"
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
         <b-field v-if="search && item.enrollment.isOutsourceTransfer"
                  label="Kıdem Başlangıç Bitiş Tarihi">
           <b-datepicker v-model="item.enrollment.seniorityStartDateEnd"
+                        :disabled="!!widgetForm.editItem.flowId"
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
@@ -154,18 +164,21 @@
                  :message="$v.item.enrollment.leaveDate.$error ? 'Zorunlu alan': ''"
                  label="Çıkış Tarihi">
           <b-datepicker v-model="item.enrollment.leaveDate"
+                        :disabled="!!widgetForm.editItem.flowId"
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
         <b-field v-if="search && item.enrollment.isOutsourceTransfer"
                  label="Çıkış Başlangıç Tarihi">
           <b-datepicker v-model="item.enrollment.leaveDateEndBegin"
+                        :disabled="!!widgetForm.editItem.flowId"
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
         <b-field v-if="search && item.enrollment.isOutsourceTransfer"
                  label="Çıkış Bitiş Tarihi">
           <b-datepicker v-model="item.enrollment.leaveDateEnd"
+                        :disabled="!!widgetForm.editItem.flowId"
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
@@ -174,18 +187,21 @@
                  :message="$v.item.enrollment.transferDate.$error ? 'Zorunlu alan': ''"
                  label="Haklarıyla Devir Tarihi">
           <b-datepicker v-model="item.enrollment.transferDate"
+                        :disabled="!!widgetForm.editItem.flowId"
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
         <b-field v-if="search && item.enrollment.isOutsourceTransfer"
                  label="Haklarıyla Devir Başlangıç Tarihi">
           <b-datepicker v-model="item.enrollment.transferDateBegin"
+                        :disabled="!!widgetForm.editItem.flowId"
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
         <b-field v-if="search && item.enrollment.isOutsourceTransfer"
                  label="Haklarıyla Devir Bitiş Tarihi">
           <b-datepicker v-model="item.enrollment.transferDateEnd"
+                        :disabled="!!widgetForm.editItem.flowId"
                         placeholder="Seçiniz..."
                         icon="calendar-today"/>
         </b-field>
@@ -198,6 +214,7 @@
 
             <b-field>
               <b-input v-if="!search" v-model="item.enrollment.leaveDayCost"
+                       :disabled="!!widgetForm.editItem.flowId"
                        placeholder="İzin Yükü"
                        type="number"
                        min="1"
@@ -219,6 +236,7 @@
         </b-field>
         <b-field v-if="!search" label="Diğer Notlar">
           <b-input v-model="item.enrollment.otherNotes"
+                   :disabled="!!widgetForm.editItem.flowId"
                    type="textarea"
                    minlength="10"
                    maxlength="300"
@@ -230,13 +248,13 @@
 
     </div>
     <div v-if="!search" class="field is-grouped">
-      <p v-if="!widgetForm.editItem.flowId" class="control">
+      <p v-if="!!!widgetForm.editItem.flowId" class="control">
         <button type="submit"
                 class="button is-primary"
                 @click="startEmployment(item)">Personel Girişini Başlat</button>
       </p>
 
-      <p v-if="!widgetForm.editItem.flowId" class="control">
+      <p v-if="!!!widgetForm.editItem.flowId" class="control">
         <button :disabled="!isDraft"
                 class="button is-info"
                 @click="saveAsDraft">Taslak Olarak Kaydet</button>
@@ -248,6 +266,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { required, requiredIf } from 'vuelidate/lib/validators'
+import { formValidation } from '../../../common'
 
 export default {
   props: ['search', 'item', 'edit'],
@@ -361,6 +380,7 @@ export default {
     },
 
     startEmployment(payload) {
+      formValidation(this.widgetForm)
       this.$v.item.enrollment.$touch()
       if (!this.$v.$invalid) {
         this.$store.dispatch('widgetForm/startEmployment', payload)

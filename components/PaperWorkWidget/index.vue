@@ -23,11 +23,11 @@
     <div class="field is-grouped">
       <!-- :disabled="canStartEmployment" -->
 
-      <!-- <p v-if="!widgetForm.editItem.flowId" class="control">
+      <p v-if="widgetForm.editItem.flowId" class="control">
         <button type="submit"
                 class="button is-primary"
-                @click="startEmployment(item)">Personel Girişini Başlat</button>
-      </p> -->
+                @click="updateEmployment(item)">Güncelle</button>
+      </p>
       <p v-if="edit && widgetForm.editItem.flowId && !documentDetail.mandatoryDocuments" class="control">
         <button class="button is-warning"
                 @click="startBPProcess">BP Bilgilendirme Gönder</button>
@@ -126,12 +126,9 @@ export default {
       cancelDocument: 'widgetForm/cancelDocument'
     }),
 
-    /* startEmployment(payload) {
-      this.$v.item.enrollment.$touch()
-      if (!this.$v.$invalid) {
-        this.$store.dispatch('widgetForm/startEmployment', payload)
-      }
-    }, */
+    updateEmployment(payload) {
+      this.$store.dispatch('widgetForm/updateEmployment', payload)
+    },
 
     sendToDocumentationTeam() {
       this.documentDetail.mandatoryDocuments

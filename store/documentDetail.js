@@ -3,7 +3,6 @@ const documentDetail = {
   state: {
     documentsList: [],
     maximoHistory: [],
-    maximoEmail: [],
     mandatoryDocuments: true
   },
   mutations: {
@@ -16,8 +15,8 @@ const documentDetail = {
       state.documentsList[0].documentState = 1
     },
     setMaximo(state, payload) {
-      state.maximoHistory = payload[0]
-      state.maximoEmail = payload[1]
+      console.log(payload)
+      state.maximoHistory = payload
     }
   },
   getters: {},
@@ -34,7 +33,7 @@ const documentDetail = {
       )
       return response.status === 200
         ? commit('setMandatoryDocuments', response.data)
-        : null
+        : []
     },
 
     async getDocumentsList({ commit }, payload) {
@@ -42,14 +41,14 @@ const documentDetail = {
         `document/employee/detail/search`,
         payload
       )
-      return data ? commit('setDocumentsList', data) : null
+      return data ? commit('setDocumentsList', data) : []
     },
 
     async getMaximo({ commit }, id) {
       const { data } = await this.$axios.get(
         `document/employee/maximo/${id}/history`
       )
-      return data ? commit('setMaximo', data) : null
+      return data ? commit('setMaximo', data) : []
     }
   }
 }

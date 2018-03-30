@@ -54,7 +54,7 @@
         </div>
         <div class="field is-grouped is-pulled-right is-clearfix">
           <div class="control">
-            <a class="button is-success" @click="setBuddy">Buddy Atamasını Yap</a>
+            <a :disabled="!tasks.item.enrollment.buddyEmployee.id" class="button is-success" @click="setBuddy">Buddy Atamasını Yap</a>
           </div>
         </div>
       </div>

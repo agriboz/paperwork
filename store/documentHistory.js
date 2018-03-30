@@ -17,7 +17,7 @@ const documentHistory = {
       // const flowId = rootState.widgetForm.editItem.flowId
       const id = rootState.widgetForm.editItem.id
       const { data } = await this.$axios.get(`sendinginfo/documentmaster/${id}`)
-      return data ? commit('setDocumentHistory', data) : null
+      return data ? commit('setDocumentHistory', data) : []
     },
     async getSendingInfo({ commit, rootState }) {
       // const flowId = rootState.widgetForm.editItem.flowId
@@ -25,7 +25,7 @@ const documentHistory = {
       const { data } = await this.$axios.get(
         `document/employee/flow/${id}/history`
       )
-      return data ? commit('setSendingInfo', data) : null
+      return data ? commit('setSendingInfo', data) : []
     }
   }
 }

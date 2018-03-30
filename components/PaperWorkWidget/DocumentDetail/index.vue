@@ -55,7 +55,7 @@
           </b-field> -->
         </b-table-column>
         <b-table-column v-if="!widgetForm.editItem.flowId" label="Aksiyon">
-          <button class="button is-danger" @click="removeDocument(props.row)">Evrak Sil</button>
+          <button class="button is-danger" @click="removeDocument(props.row, edit)">Evrak Sil</button>
         </b-table-column>
       </template>
       <template slot="empty">
@@ -192,8 +192,9 @@ export default {
       this.showDocument = !this.showDocument
     },
 
-    removeDocument(item) {
-      this.$store.commit('widgetForm/setNewDocumentList', item)
+    removeDocument(item, edit) {
+      const payload = { item, edit }
+      this.$store.commit('widgetForm/setNewDocumentList', payload)
     },
 
     async changeDocumentStatus(id, documentStatus) {

@@ -79,6 +79,7 @@ import IncidentInformation from '@/components/IncidentInformation'
 import DocumentSearchResult from '@/components/DocumentSearchResult'
 
 export default {
+  middleware: 'auth',
   components: {
     EmployeeInformation,
     EmployeeInformationDetail,

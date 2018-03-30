@@ -19,6 +19,30 @@ const widgetForm = {
         isFormerWorker: false,
         isOutsourceTransfer: false,
         isDoctorAppointmentSet: false,
+        organization: {
+          id: null
+        },
+        company: {
+          id: null
+        },
+        workLocation: {
+          id: null
+        },
+        sgkLocation: {
+          id: null
+        },
+        contactType: {
+          id: null
+        },
+        hrBusinessPartnerEmployee: {
+          id: null
+        },
+        buddyEmployee: {
+          id: null
+        },
+        buddyType: {
+          id: null
+        },
         manager: {
           name: null,
           id: null
@@ -95,9 +119,39 @@ const widgetForm = {
     },
 
     setNewDocumentList(state, payload) {
-      console.log(payload)
+      console.log(payload.item['organizationDocumentId'])
+
+      const removeDocument = (collection, key) => {
+        return collection.filter(item => {
+          return item[key] !== payload.item[key]
+        })
+      }
+      if (payload.edit) {
+        console.log('object')
+        state.item.documentDetails = removeDocument(
+          state.item.documentDetails,
+          'organizationDocumentId'
+        )
+      }
+
+      if (!payload.edit) {
+        console.log('object')
+        state.item.documentDetails = removeDocument(
+          state.item.documentDetails,
+          'detailId'
+        )
+      }
+      /* if (!payload.edit) {
+
+        console.log('object')
+        state.item.documentDetails = removeDocument(state.item.documentDetails)(
+          payload.item.detailId
+        )
+      } */
+
       state.item.documentDetails = state.item.documentDetails.filter(
-        item => item.detailId !== payload.detailId
+        item =>
+          item['organizationDocumentId'] !== payload.item['organizationDocumentId']
       )
     }
   },
@@ -200,6 +254,37 @@ const widgetForm = {
 
       await this.$axios
         .post(`document/employee/startEmployment`, sendDraftData)
+        .then(() => this.$router.push('/'))
+    },
+
+    async updateEmployment({ rootState }, payload) {
+      const getState = {
+        ...payload,
+        enrollment: {
+          ...payload.enrollment,
+          employeeType: {
+            id: 1
+          },
+          entryUser: {
+            id: rootState.employee.id
+          }
+        }
+      }
+
+      const sendDraftData = Object.assign({}, getState, {
+        organization: {
+          id: payload.enrollment.organization.id
+        },
+        entryUser: {
+          id: rootState.employee.id
+        },
+        documentGroup: {
+          id: 1
+        }
+      })
+
+      await this.$axios
+        .put(`document/employee/${payload.id}`, sendDraftData)
         .then(() => this.$router.push('/'))
     },
 
