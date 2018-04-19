@@ -85,6 +85,9 @@ export default {
       await this.getBuddy(this.tasks.item.enrollment.buddyEmployee.id)
     }
   },
+  beforeDestroy() {
+    this.tasks.buddyInformation = null
+  },
   methods: {
     ...mapActions({
       getBuddyEmployees: 'shared/getBuddyEmployees',

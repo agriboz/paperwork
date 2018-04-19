@@ -17,26 +17,28 @@
             <b-table-column field="id" label="ID" sortable numeric>
               {{ props.row.documentMasterId }}
             </b-table-column>
-            <b-table-column field="startedPerson" label="Kişi" sortable>
-              {{ props.row.startedPerson }}
+
+            <b-table-column field="firstname" label="İşe Alınan Çalışan Ad Soyad" sortable>
+              {{ props.row.firstname }} {{ props.row.lastname }}
             </b-table-column>
-            <!--  <b-table-column field="requestStatusId" label="Durum" sortable>
-              {{ props.row.requestStatusId }}
-            </b-table-column> -->
             <b-table-column field="requestDate" label="Talep Tarihi" sortable>
               {{ props.row.requestDate !== null ? new Date(props.row.requestDate).toLocaleDateString('tr-TR') : '-' }}
             </b-table-column>
             <b-table-column field="startDate" label="Başlangıç Tarihi" sortable>
               {{ props.row.startDate !== null ? new Date(props.row.startDate).toLocaleDateString('tr-TR') : '-' }}
             </b-table-column>
+
+            <b-table-column field="startedPerson" label="İşe Alım Operasyon Yetkilisi" sortable>
+              {{ props.row.startedPerson }}
+            </b-table-column>
+
             <b-table-column field="statusDescription" label="Durum" sortable>
-              {{ props.row.statusDescription }}
+              {{ props.row.flowObject === 'pozAmir' ? 'Amir tarafından Buddy seçimi bekliyor' : props.row.flowObject === 'pozGrupIseAlim' ? 'İşe alım operasyon ekibinde bekliyor' : props.row.flowObject === 'pozGrupDokumantasyon' ? 'Dokümantasyon ekibinde bekliyor' : '-' }}
             </b-table-column>
             <b-table-column label="Aksiyon">
-              <!-- <nuxt-link class="button is-primary" :to="'tasks/' + props.row.id">Detay</nuxt-link> -->
-              <nuxt-link v-if="props.row.requestObject === 'pozAmir'" :to="'tasks/manager/' + props.row.id" class="button is-primary">Detay</nuxt-link>
-              <nuxt-link v-if="props.row.requestObject === 'pozGrupIseAlim'" :to="'white-collar/edit/' + props.row.id" class="button is-primary">Detay</nuxt-link>
-              <nuxt-link v-if="props.row.requestObject === 'pozGrupDokumantasyon'" :to="'linkgelecek' + props.row.id" class="button is-primary">Detay</nuxt-link>
+              <nuxt-link v-if="props.row.flowObject === 'pozAmir'" :to="'tasks/manager/' + props.row.id" class="button is-primary">Detay</nuxt-link>
+              <nuxt-link v-if="props.row.flowObject === 'pozGrupIseAlim'" :to="'white-collar/edit/' + props.row.documentMasterId" class="button is-primary" @click.native="setRequestId(props.row.requestId)">Detay</nuxt-link>
+              <a v-if="props.row.flowObject === 'pozGrupDokumantasyon'" :href="'http://10.10.27.36:2216/documents/edit/' + props.row.documentMasterId" class="button is-primary">Detay</a>
             </b-table-column>
           </template>
           <template slot="empty">
@@ -70,6 +72,10 @@ export default {
     ...mapState(['ui', 'tasks'])
   },
   methods: {
+    setRequestId(requestId) {
+      console.log(requestId)
+      this.$store.commit('tasks/setRequestId', requestId)
+    },
     ...mapActions({
       getTasks: 'tasks/getTasks'
     })

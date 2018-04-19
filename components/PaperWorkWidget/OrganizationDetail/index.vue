@@ -158,14 +158,10 @@
             </b-tooltip>
           </p>
         </div>
-
-
-
-        <b-field :type="$v.item.enrollment.buddyType.$error ? 'is-danger' : ''"
-                 :message="$v.item.enrollment.buddyType.$error ? 'Zorunlu alan': ''"
-                 label="Müdür Üstü ve Müdür Altı"/>
+        <b-field label="Müdür Üstü ve Müdür Altı"/>
         <div v-for="b in shared.buddyTypes" :key="b.id" class="block">
-          <b-radio v-model="item.enrollment.buddyType" :disabled="item.enrollment.isBuddyAssigned || notEditable"
+          <b-radio v-model="item.enrollment.buddyType" :type="$v.item.enrollment.buddyType.$error ? 'is-danger' : ''"
+                   :message="$v.item.enrollment.buddyType.$error ? 'Zorunlu alan': ''" :disabled="item.enrollment.isBuddyAssigned || notEditable"
                    :native-value="b">
             {{ b.name }}
           </b-radio>
@@ -185,7 +181,7 @@
               </option>
             </b-select>
           </b-field>
-          <div v-if="tasks.buddyInformation">
+          <div v-if="tasks.buddyInformation && item.enrollment.buddyEmployee">
             <b-field label="Sicil Numarası">
               <b-input :value="tasks.buddyInformation.registry" :disabled="true"/>
             </b-field>
@@ -208,16 +204,21 @@
 
     </div>
     <div v-if="!search && !hideBuddyPage" class="field is-grouped">
-      <p v-if="!!!widgetForm.editItem.flowId" class="control">
+      <p v-if="!widgetForm.editItem.flowId" class="control">
         <button type="submit"
                 class="button is-primary"
                 @click="startEmployment(item)">Personel Girişini Başlat</button>
       </p>
 
-      <p v-if="!!!widgetForm.editItem.flowId" class="control">
+      <p v-if="!widgetForm.editItem.flowId" class="control">
         <button :disabled="!isDraft"
                 class="button is-info"
                 @click="saveAsDraft">Taslak Olarak Kaydet</button>
+      </p>
+      <p v-if="widgetForm.editItem.flowId && widgetForm.editItem.ebaStatus.id <= 3" class="control">
+        <button type="submit"
+                class="button is-primary"
+                @click="updateEmployment(item)">Güncelle</button>
       </p>
     </div>
   </div>
@@ -233,7 +234,7 @@ import {
   maxLength
 } from 'vuelidate/lib/validators'
 import { formValidation, checkEmptyDropDown } from '../../../common'
-
+const editing = (item, fn) => (item ? fn(item) : [])
 export default {
   props: ['search', 'item', 'edit', 'notEditable', 'hideBuddyPage'],
   data: () => ({
@@ -311,8 +312,6 @@ export default {
     }
   },
   beforeMount() {
-    const editing = (item, fn) => (item ? fn(item) : [])
-
     this.getOrganizations()
     this.getBuddyTypes()
     // fix this
@@ -332,16 +331,12 @@ export default {
       editing(organizationId, this.getHrBusinessPartnerEmployees)
       editing(companyId, this.getWorkLocations)
       editing(companyId, this.getBuddyEmployees)
-      /* organizationId ? await this.getCompanies(organizationId) : []
-      organizationId ? await this.getCategories(organizationId) : []
-      organizationId
-        ? await this.getHrBusinessPartnerEmployees(organizationId)
-        : []
-      companyId ? await this.getWorkLocations(companyId) : []
-      companyId ? await this.getBuddyEmployees(companyId) : [] */
     }
   },
   methods: {
+    updateEmployment(payload) {
+      this.$store.dispatch('widgetForm/updateEmployment', payload)
+    },
     ...mapActions({
       getOrganizations: 'shared/getOrganizations',
       getCompanies: 'shared/getCompanies',
@@ -371,6 +366,10 @@ export default {
     },
 
     checkModelStatus() {
+      if (this.item.enrollment.isBuddyAssigned) {
+        delete this.item.enrollment.buddyType
+      }
+
       if (!this.item.enrollment.isBuddyAssigned) {
         delete this.item.enrollment.buddyEmployee
       }

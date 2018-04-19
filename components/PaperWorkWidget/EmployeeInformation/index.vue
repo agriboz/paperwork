@@ -26,15 +26,14 @@
                type="email"
                maxlength="50" />
     </b-field>
-    <!-- v-if="!search && !hideBuddyPage" -->
     <b-field :type="$v.item.enrollment.gsmTel.$error ? 'is-danger' : ''"
              :message="$v.item.enrollment.gsmTel.$error ? 'Zorunlu alan': ''"
              label="Cep Telefonu" />
     <the-mask v-model="item.enrollment.gsmTel"
               :disabled="notEditable"
-              :masked="false"
-              placeholder="(500) 000 00 00"
-              mask="(5##) ### ## ##" class="input" type="text" />
+              :masked="true"
+              placeholder="+90 (500) 000 00 00"
+              mask="+90 (5##) #######" class="input" type="text" />
 
     <b-field v-if="!hideBuddyPage"
              :type="$v.item.enrollment.identityNumber.$error ? 'is-danger' : ''"
@@ -46,6 +45,12 @@
                type="text"
                maxlength="11"
                minlength="11" />
+    </b-field>
+    <b-field v-if="search"
+             label="İşe Başlangıç Tarihi">
+      <b-datepicker v-model="item.enrollment.startWorkDate"
+                    placeholder="Seçiniz..."
+                    icon="calendar-today" />
     </b-field>
     <b-field v-if="!search && !hideBuddyPage"
              :type="$v.item.enrollment.contactType.$error ? 'is-danger' : ''"
@@ -79,6 +84,11 @@
         <button :disabled="!isDraft"
                 class="button is-info"
                 @click="saveAsDraft">Taslak Olarak Kaydet</button>
+      </p>
+      <p v-if="widgetForm.editItem.flowId && widgetForm.editItem.ebaStatus.id <= 3" class="control">
+        <button type="submit"
+                class="button is-primary"
+                @click="updateEmployment(item)">Güncelle</button>
       </p>
     </div>
 
@@ -157,8 +167,7 @@ export default {
           email
         },
         gsmTel: {
-          required,
-          maxLength: maxLength(10)
+          required
         },
         contactType: {
           checkEmptyDropDown
@@ -174,6 +183,9 @@ export default {
     this.getChannels()
   },
   methods: {
+    updateEmployment(payload) {
+      this.$store.dispatch('widgetForm/updateEmployment', payload)
+    },
     startEmployment(payload) {
       formValidation(this.widgetForm)
       this.$v.item.enrollment.$touch()

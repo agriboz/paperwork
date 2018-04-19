@@ -78,17 +78,11 @@ const shared = {
       return data ? commit('setOrganizations', data) : null
     },
 
-    async getSurveyorEmployees({ commit, rootState }) {
-      let id = null
-      if (rootState.widgetForm.item.enrollment.organization) {
-        id = rootState.widgetForm.item.enrollment.organization.id
-      } else {
-        id = rootState.widgetForm.editItem.enrollment.organization.id
-      }
-
+    async getSurveyorEmployees({ commit }, payload) {
+      console.log(payload)
       const { data } = await this.$axios.post(`organization/managers`, {
-        id,
-        name: ''
+        id: payload.organizationId,
+        name: payload.name
       })
 
       return data ? commit('setSurveyorEmployees', data) : null

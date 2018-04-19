@@ -16,36 +16,22 @@
         <organization-detail :item="item" :edit="edit" :search="search" />
       </b-tab-item>
 
-      <b-tab-item :disabled="!disableDocumentList" label="Evrak Listesi" icon="file-document">
+      <b-tab-item label="Evrak Listesi" icon="file-document">
         <document-detail :item="item" :edit="edit" :search="search" />
       </b-tab-item>
     </b-tabs>
     <div class="field is-grouped">
-      <!-- :disabled="canStartEmployment" -->
-
-      <p v-if="widgetForm.editItem.flowId" class="control">
-        <button type="submit"
-                class="button is-primary"
-                @click="updateEmployment(item)">Güncelle</button>
-      </p>
-      <p v-if="edit && widgetForm.editItem.flowId && !documentDetail.mandatoryDocuments" class="control">
+      <p v-if="edit && widgetForm.editItem.flowId && !documentDetail.mandatoryDocuments && !item.documentationFlowStartDate" class="control">
         <button class="button is-warning"
                 @click="startBPProcess">BP Bilgilendirme Gönder</button>
       </p>
-      <p v-if="widgetForm.editItem.flowId" class="control">
+      <p v-if="widgetForm.editItem.flowId && !item.documentationFlowStartDate" class="control">
         <button class="button is-success"
                 @click="sendToDocumentationTeam(item)">Dökümantasyon Ekibine Gönder</button>
       </p>
-      <!-- <p v-if="!widgetForm.editItem.flowId" class="control">
-        <button :disabled="!isDraft"
-                class="button is-info"
-                @click="saveAsDraft">Taslak Olarak Kaydet</button>
-      </p> -->
-
-      <p v-if="edit && canCancel" class="control">
+      <p v-if="edit && canCancel && item.ebaStatus.id <= 3" class="control">
         <button class="button" @click="cancelDocument">Süreci İptal Et</button>
       </p>
-
       <p v-if="edit && canDelete" class="control" >
         <button class="button is-danger"
                 @click="deleteDocument">Sil</button>
@@ -95,14 +81,6 @@ export default {
   computed: {
     ...mapState(['widgetForm', 'documentDetail']),
 
-    disableDocumentList() {
-      if (this.edit) {
-        return true
-      } else {
-        return !!this.widgetForm.item.enrollment.organization
-      }
-    },
-
     canCancel() {
       return this.widgetForm.editItem.flowId
     },
@@ -126,9 +104,9 @@ export default {
       cancelDocument: 'widgetForm/cancelDocument'
     }),
 
-    updateEmployment(payload) {
+    /* updateEmployment(payload) {
       this.$store.dispatch('widgetForm/updateEmployment', payload)
-    },
+    }, */
 
     sendToDocumentationTeam() {
       this.documentDetail.mandatoryDocuments
@@ -188,7 +166,10 @@ export default {
       return this.activeTab === 3
         ? this.$store.dispatch('widgetForm/getDocumentDetails', {
             organization,
-            category: organizationDocumentCategory,
+            category:
+              this.edit && organizationDocumentCategory.id === null
+                ? null
+                : organizationDocumentCategory,
             isExistsPersonalPrivateHealthInsurance,
             isHealthInsuranceIncludeFamily,
             isDisabled,

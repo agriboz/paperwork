@@ -41,7 +41,7 @@ module.exports = {
   css: ['~/assets/style.scss'],
   modules: ['@nuxtjs/axios'],
   env: {
-    baseURL: 'http://10.10.27.36:8181/DTR/v1/',
+    baseURL: 'http://10.10.27.36:8181/DTR/v1/'
   },
   axios: {
     baseURL: 'http://10.10.27.36:8181/DTR/v1/',
@@ -53,7 +53,7 @@ module.exports = {
   /*
   ** Customize the progress bar color
   */
-  loading: { color: '#3B8070', height: '5px' },
+  loading: '~/components/loading.vue',
   loadingIndicator: {
     name: 'pulse',
     background: '#f5f5f5',
@@ -69,7 +69,7 @@ module.exports = {
     /*
     ** Run ESLint on save
     */
-    extend(config, { isDev, isClient }) {
+    /* extend(config, { isDev, isClient }) {
       if (isDev && isClient) {
         config.module.rules.push({
           enforce: 'pre',
@@ -78,6 +78,6 @@ module.exports = {
           exclude: /(node_modules)/
         })
       }
-    }
+    } */
   }
 }

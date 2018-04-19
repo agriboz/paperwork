@@ -9,7 +9,7 @@ const widgetForm = {
       },
       enrollment: {
         isBuddyAssigned: false,
-        isSurveySent: false,
+        /* isSurveySent: false,
         isTookEngilshExam: false,
         IsExistsPersonalPrivateHealthInsurance: false,
         isHealthInsuranceIncludeFamily: false,
@@ -18,7 +18,7 @@ const widgetForm = {
         isRetired: false,
         isFormerWorker: false,
         isOutsourceTransfer: false,
-        isDoctorAppointmentSet: false,
+        isDoctorAppointmentSet: false, */
         organization: {
           id: null
         },
@@ -40,9 +40,7 @@ const widgetForm = {
         buddyEmployee: {
           id: null
         },
-        buddyType: {
-          id: null
-        },
+
         manager: {
           name: null,
           id: null
@@ -50,26 +48,19 @@ const widgetForm = {
       }
     },
     editItem: {
-      documentDetails: []
+      documentDetails: [],
+      enrollment: {
+        manager: {
+          name: null,
+          id: null
+        }
+      }
     },
     isFirstTabInValid: true,
     isSecondTabInValid: true,
     isThirdTabInValid: true
   },
   mutations: {
-    updateDocumentsList(state, payload) {
-      console.log(payload.index)
-      // Replace item at index using native splice
-      state.item.documentDetails = state.item.documentDetails.map(
-        (item, index) => {
-          if (
-            item.organizationDocumentId === payload.data.organizationDocumentId
-          ) {
-            item[index] = Object.assign({}, payload.data)
-          }
-        }
-      )
-    },
     item(state, payload) {
       Object.assign(state.item, payload)
     },
@@ -119,8 +110,6 @@ const widgetForm = {
     },
 
     setNewDocumentList(state, payload) {
-      console.log(payload.item['organizationDocumentId'])
-
       const removeDocument = (collection, key) => {
         return collection.filter(item => {
           return item[key] !== payload.item[key]
@@ -128,30 +117,23 @@ const widgetForm = {
       }
       if (payload.edit) {
         console.log('object')
+        state.editItem.documentDetails = removeDocument(
+          state.editItem.documentDetails,
+          'detailId'
+        )
+      }
+
+      if (!payload.edit) {
         state.item.documentDetails = removeDocument(
           state.item.documentDetails,
           'organizationDocumentId'
         )
       }
 
-      if (!payload.edit) {
-        console.log('object')
-        state.item.documentDetails = removeDocument(
-          state.item.documentDetails,
-          'detailId'
-        )
-      }
-      /* if (!payload.edit) {
-
-        console.log('object')
-        state.item.documentDetails = removeDocument(state.item.documentDetails)(
-          payload.item.detailId
-        )
-      } */
-
       state.item.documentDetails = state.item.documentDetails.filter(
         item =>
-          item['organizationDocumentId'] !== payload.item['organizationDocumentId']
+          item['organizationDocumentId'] !==
+          payload.item['organizationDocumentId']
       )
     }
   },
@@ -283,19 +265,30 @@ const widgetForm = {
         }
       })
 
-      await this.$axios
-        .put(`document/employee/${payload.id}`, sendDraftData)
-        .then(() => this.$router.push('/'))
+      await this.$axios.put(`document/employee/${payload.id}`, sendDraftData)
     },
 
     async startBPProcess({ rootState }) {
       const id = rootState.widgetForm.editItem.id
+      const requestId = rootState.widgetForm.editItem.requestId
 
-      await this.$axios.post(`document/employee/sendmanagerapprove`, { id })
+      await this.$axios
+        .post(`document/employee/sendmanagerapprove`, {
+          id,
+          requestId
+        })
+        .then(() => this.$router.push('/'))
     },
 
-    async sendToDocumentationTeam(payload) {
-      await this.$axios.post(`document/employee/startdocumentation`, payload)
+    async sendToDocumentationTeam({ rootState }, payload) {
+      const requestId = rootState.tasks.requestId
+      const data = {
+        ...payload,
+        requestId
+      }
+      await this.$axios
+        .post(`document/employee/startdocumentation`, data)
+        .then(() => this.$router.push('/'))
     },
 
     /* async deleteDocument({ rootState }) {
@@ -313,15 +306,24 @@ const widgetForm = {
 
     async cancelDocument({ rootState }) {
       const id = rootState.widgetForm.editItem.id
+      const requestId = rootState.widgetForm.editItem.requestId
       const { status, data, statusText } = await this.$axios.delete(
-        `document/employee/${id}`
+        `document/employee/${id}`,
+        {
+          data: {
+            requestId,
+            id
+          }
+        }
       )
       status === 200 && data
         ? this.$router.push('/')
-        : this.$toast.open({
-            type: 'is-warning',
-            message: statusText
-          })
+        : this.$toast
+            .open({
+              type: 'is-warning',
+              message: statusText
+            })
+            .then(() => this.$router.push('/'))
     }
   }
 }

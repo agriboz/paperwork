@@ -7,7 +7,7 @@
       <div class="columns container is-fluid">
         <Sidebar v-if="isAuthenticated" />
         <nuxt class="column main" />
-        <b-loading :active.sync="ui.loading" :can-cancel="true"/>
+        <b-loading :active.sync="ui.loading" :can-cancel="false"/>
       </div>
     </div>
 

@@ -1,6 +1,7 @@
 const tasks = {
   namespaced: true,
   state: {
+    requestId: null,
     data: [],
     buddyInformation: null
   },
@@ -14,6 +15,9 @@ const tasks = {
     },
     setBuddyInformation(state, payload) {
       state.buddyInformation = payload
+    },
+    setRequestId(state, payload) {
+      state.requestId = payload
     }
   },
   actions: {

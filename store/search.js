@@ -14,6 +14,8 @@ const search = {
         ...payload.enrollment,
         ...payload
       }
+      // todo -> deconstruct object
+      delete searchData.enrollment
       const { data } = await this.$axios.post(
         `document/employee/search`,
         searchData

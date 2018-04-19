@@ -15,7 +15,6 @@ const documentDetail = {
       state.documentsList[0].documentState = 1
     },
     setMaximo(state, payload) {
-      console.log(payload)
       state.maximoHistory = payload
     }
   },

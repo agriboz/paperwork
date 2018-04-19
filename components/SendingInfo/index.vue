@@ -20,12 +20,7 @@
           <b-table-column field="person" label="Kişi" sortable>
             {{ props.row.person }}
           </b-table-column>
-          <b-table-column field="process" label="Process" sortable>
-            {{ props.row.process }}
-          </b-table-column>
-          <b-table-column field="status" label="Durum" sortable>
-            {{ props.row.status }}
-          </b-table-column>
+
           <b-table-column field="requestDate" label="Talep Tarihi" sortable>
             {{ props.row.requestDate !== null ? new Date(props.row.requestDate).toLocaleDateString('tr-TR') : '-' }}
           </b-table-column>

@@ -65,49 +65,58 @@ export default function({ $axios, store }) {
       return response
     },
     error => {
-      if (error.response.status === 400) {
-        $toast.open({
-          type: 'is-danger',
-          message: 'error.response.statusText'
-        })
-      } else if (error.response.status === 401) {
-        $toast.open({
-          type: 'is-danger',
-          message: error.response.data.message
-        })
-      } else if (error.response.status === 404) {
-        $toast.open({
-          type: 'is-info',
-          message: 'Sonuç Bulunamadı'
-        })
-      } else if (error.response.status === 500) {
-        $toast.open({
-          type: 'is-danger',
-          message: error.response.data.error
-        })
-      }
       return Promise.reject(error)
     }
   )
 
+  $axios.onError(error => {
+    store.state.ui.loading = false
+    const code = parseInt(error.response && error.response.status)
+    if (code === 500) {
+      $toast.open({
+        type: 'is-danger',
+        message: 'Sistemsel bir hatal yaşandı. Yazılım ekibi ile görüşünüz'
+      })
+    }
+  })
+
   $axios.onRequest(
     config => {
       store.state.ui.loading = true
-      store.state.ui.loading = false
-
-      if (config.method === 'post') {
-        for (let key of Object.keys(config.data)) {
-          const value = config.data[key]
-
+      if (
+        (config.method === 'post' && config.data.enrollment) ||
+        (config.method === 'put' && config.data.enrollment)
+      ) {
+        for (let key of Object.keys(config.data.enrollment)) {
+          const value = config.data.enrollment[key]
           if (value instanceof Date) {
-            config.data[key] = moment(value).format('DD-MM-YYYY')
+            config.data.enrollment[key] = new Date(
+              moment(value)
+                .add(1, 'd')
+                .format('L')
+            )
           }
         }
       }
+      if (
+        (config.method === 'post' && config.data) ||
+        (config.method === 'put' && config.data)
+      ) {
+        for (let key of Object.keys(config.data)) {
+          const value = config.data[key]
+          if (value instanceof Date) {
+            config.data[key] = new Date(
+              moment(value)
+              .add(1, 'd')
+              .format('L')
+            )
+          }
+        }
+      }
+
       return config
     },
     error => {
-      console.table(error)
       return Promise.reject(error)
     }
   )

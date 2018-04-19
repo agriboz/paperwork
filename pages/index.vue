@@ -13,6 +13,7 @@
           Excel'e Aktar
         </download-excel>
       </div>
+
       <div class="control">
         <a class="button is-info" @click.prevent="makeSearch(widgetForm.item)">Arama Yap</a>
       </div>
@@ -57,7 +58,7 @@
         </download-excel>
       </div>
       <div class="control">
-        <a class="button is-info" @click.prevent="makeSearch(widgetForm.item)" >Arama Yap</a>
+        <a class="button is-info" @click="makeSearch(widgetForm.item)" >Arama Yap</a>
       </div>
     </div>
     <div class="is-clearfix"/>
@@ -104,6 +105,7 @@ export default {
   beforeMount() {
     const state = JSON.parse(localStorage.getItem('state'))
     this.resetState(state.widgetForm.item)
+
     this.makeSearch(this.widgetForm.item).then(() => {
       const searchWrapper = document.getElementById('document-search-result')
       searchWrapper.scrollIntoView({

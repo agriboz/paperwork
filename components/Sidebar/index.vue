@@ -19,11 +19,12 @@
     <aside class="menu">
       <ul class="menu-list">
         <li v-if="isRecruitmentOperation">
-          <nuxt-link to="/" class="menu-link" exact>
+          <a href="#" class="menu-link" @click.prevent="subMenu.first = !subMenu.first">
             <b-icon icon="home"/>
             <span class="menu-item">İşe Giriş İşlemleri</span>
-          </nuxt-link>
-          <ul>
+            <b-icon :icon="subMenu.first ? 'chevron-down' : 'chevron-left' "/>
+          </a>
+          <ul v-if="subMenu.first" style="margin-top:0">
             <li v-if="isRecruitmentOperation">
               <nuxt-link to="/white-collar" class="menu-link" exact>
                 <b-icon icon="human-handsup"/>
@@ -46,10 +47,31 @@
           </nuxt-link>
         </li>
         <li v-if="isDocumentationEmployee">
-          <a href="//10.10.27.36:2215/document-tracking" class="menu-link">
+          <a href="#" class="menu-link" @click.prevent="subMenu.second = !subMenu.second">
             <b-icon icon="file"/>
-            <span class="menu-item">Dökümantasyona Gider</span>
+            <span class="menu-item">Dokümantason İşlemleri</span>
+            <b-icon :icon="subMenu.second ? 'chevron-down' : 'chevron-left' "/>
           </a>
+          <ul v-if="subMenu.second" style="margin-top:0">
+            <li>
+              <a class="menu-link" href="//10.10.27.36:2216/">
+                <b-icon icon="home"/>
+                <span class="menu-item">Arama</span>
+              </a>
+            </li>
+            <li>
+              <a class="menu-link" exact href="//10.10.27.36:2216/registry">
+                <b-icon icon="worker"/>
+                <span class="menu-item">Personel Sicil Numarası Tanımlama</span>
+              </a>
+            </li>
+            <li>
+              <a class="menu-link" exact href="//10.10.27.36:2216/box-document-list">
+                <b-icon icon="file-document"/>
+                <span class="menu-item">Kutu Evrak Listesi</span>
+              </a>
+            </li>
+          </ul>
         </li>
       </ul>
     </aside>
@@ -60,6 +82,12 @@
 import { mapGetters, mapState } from 'vuex'
 
 export default {
+  data: () => ({
+    subMenu: {
+      first: false,
+      second: false
+    }
+  }),
   computed: {
     isDocumentationEmployee() {
       return this.employee.roles.find(item => item.id === 7)

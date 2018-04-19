@@ -20,7 +20,7 @@
     </div>
     <!-- edit ? widgetForm.editItem.documentDetails : widgetForm.item.documentDetails" -->
     <b-table
-      :data="edit && !widgetForm.editItem.documentDetails.length ? widgetForm.item.documentDetails : widgetForm.item.documentDetails"
+      :data="edit && !widgetForm.editItem.documentDetails.length ? widgetForm.item.documentDetails : item.documentDetails"
       :paginated="ui.tableOpts.isPaginated"
       :per-page="ui.tableOpts.perPage"
       :pagination-simple="ui.tableOpts.isPaginationSimple"
@@ -86,6 +86,11 @@
                 class="button is-info"
                 @click="saveAsDraft">Taslak Olarak Kaydet</button>
       </p>
+      <p v-if="widgetForm.editItem.flowId && widgetForm.editItem.ebaStatus.id <= 3" class="control">
+        <button type="submit"
+                class="button is-primary"
+                @click="updateEmployment(widgetForm.editItem)">Güncelle</button>
+      </p>
     </div>
   </div>
 </template>
@@ -93,6 +98,8 @@
 <script>
 import debounce from 'lodash/debounce'
 import { mapState } from 'vuex'
+import { formValidation } from '../../../common'
+
 export default {
   props: ['item', 'edit', 'notEditable'],
   data: () => ({
@@ -123,7 +130,11 @@ export default {
     this.$store.dispatch('shared/getDocumentStatus')
   },
   methods: {
+    updateEmployment(payload) {
+      this.$store.dispatch('widgetForm/updateEmployment', payload)
+    },
     startEmployment(payload) {
+      formValidation(this.widgetForm)
       if (
         !this.widgetForm.isFirstTabInValid &&
         !this.widgetForm.isSecondTabInValid &&
